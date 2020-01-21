@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${status}]]</title>
+    <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+</head>
+<body>
+<div class="container-fluid">
+     <span class="text-center">
+        <h1 class="display-1 text-danger">[[${status}]]</h1>
+        <p><span class="text-danger">时间：</span>[[${#dates.format(timestamp)}]]</p>
+        <p><span class="text-danger">错误：</span>[[${error}]]</p>
+        <p><span class="text-danger">异常对象：</span>[[${exception}]]</p>
+        <p><span class="text-danger">异常消息：</span>[[${message}]]</p>
+    </span>
+</div>
+</body>
+</html>

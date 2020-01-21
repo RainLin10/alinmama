@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+    <style>
+        html {
+            width: 100%;
+            height: 100%
+        }
+
+        body {
+            background-color: transparent;
+        }
+
+        html {
+            background: url(/imgs/login_background_picture.jpg) no-repeat top left;
+            background-size: cover;
+        }</style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row" style="height: 500px;margin-top: 50px;">
+        <div class="col-sm-9">
+
+        </div>
+        <div class="col-sm-3" style="height: 100%;">
+            <h2>请登录</h2>
+            <h3 style="color: red" th:if="${msg!=null}" th:text="${msg}"></h3>
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label for="account">账户:</label>
+                    <input type="text" class="form-control" id="account" name="account">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码:</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <div class="form-group">
+                    <a href="/to_register">还没有账户?</a>
+                </div>
+                <button type="submit" class="btn btn-primary">登录</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

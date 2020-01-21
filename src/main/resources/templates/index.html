@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>阿林妈妈</title>
+    <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+</head>
+<body>
+<span th:if="${session.userInfo!=null}">
+    <a href="/logout">注销</a>
+    <p th:text="${session.userInfo.getNick_name()}"></p>
+</span>
+<span th:if="${session.userInfo==null}">
+    <a href="/to_login">登录</a>
+</span>
+
+<a href="/admin/findAllUsers">管理员</a>
+</body>
+</html>
