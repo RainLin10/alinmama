@@ -20,7 +20,10 @@
         html {
             background: url(/imgs/login_background_picture.jpg) no-repeat top left;
             background-size: cover;
-        }</style>
+        }
+
+
+    </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -30,24 +33,56 @@
         </div>
         <div class="col-sm-3" style="height: 100%;">
             <h2>请登录</h2>
-            <h3 style="color: red" th:if="${msg!=null}" th:text="${msg}"></h3>
+            <h3 th:style="${msg=='注册成功'?'color: green':'color:red'}" th:if="${msg!=null}" th:text="${msg}"></h3>
             <form action="/login" method="post">
                 <div class="form-group">
-                    <label for="account">账户:</label>
-                    <input type="text" class="form-control" id="account" name="account">
+                <label>账户:</label>
+                <input type="text" class="form-control"  name="account">
+            </div>
+                <div class="form-group">
+                    <label>密码:</label>
+                    <input type="password" class="form-control" name="password">
                 </div>
                 <div class="form-group">
-                    <label for="password">密码:</label>
-                    <input type="password" class="form-control" id="password" name="password">
-                </div>
-                <div class="form-group">
-                    <a href="/to_register">还没有账户?</a>
+                    <u><a data-toggle="modal" data-target="#myModal" style="color: white;">还没有账户?</a></u>
                 </div>
                 <button type="submit" class="btn btn-primary">登录</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- 注册模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/register" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">请注册</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>账户:</label>
+                        <input type="text" class="form-control" name="account" maxlength="15" placeholder="账户长度在15个字符内,请设置有标识性的账户名">
+                    </div>
+                    <div class="form-group">
+                        <label>密码:</label>
+                        <input type="password" class="form-control" name="password" maxlength="15" placeholder="密码长度在15个字符内,请设置相对复杂的密码">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">注册</button>
+                </div>
             </form>
         </div>
     </div>
 </div>
 </body>
+<script>
 
+</script>
 </html>

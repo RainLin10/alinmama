@@ -1,8 +1,7 @@
 package com.yylnb.controller;
 
 import com.yylnb.entity.User;
-import com.yylnb.entity.UserInfo;
-import com.yylnb.service.UserService;
+import com.yylnb.service.LoginService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -11,12 +10,10 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.net.UnknownHostException;
 
 
 /**
@@ -25,10 +22,19 @@ import javax.servlet.http.HttpSession;
  */
 
 @Controller
-public class loginController {
+public class LoginController {
     @Autowired
-    UserService userService;
+    LoginService loginService;
 
+    /**
+     * 接收前端传来的账户和密码使用shiro进行登录校验,登录成功则存入session相关的用户信息，登陆失败则用model返回相关提示信息
+     *
+     * @param account
+     * @param password
+     * @param model
+     * @param session
+     * @return
+     */
     @PostMapping("/login")
     public String login(@RequestParam("account") String account, @RequestParam("password") String password, Model model, HttpSession session) {
         //获取Subject
@@ -43,10 +49,16 @@ public class loginController {
             //获取用户id
             User user = (User) subject.getPrincipal();
             Integer id = user.getId();
+            //登录成功后更新相关信息
+            loginService.updateForLogin(id);
             //根据id查找到用户的所有信息
-            UserInfo userInfo = userService.findUserInfoById(id);
+            User userInfo = loginService.findUserInfoById(id);
             //将信息传入session
             session.setAttribute("userInfo", userInfo);
+            //如果是管理员账号，直接进入管理员页面
+            if (user.getRole().equals("admin")) {
+                return "redirect:/admin/findAllUsers?where=all";
+            }
             return "redirect:/";
         } catch (UnknownAccountException e) {
             //用户不存在
@@ -56,11 +68,19 @@ public class loginController {
             //用户不存在
             model.addAttribute("msg", "密码错误");
             return "login";
+        } catch (UnknownHostException e) {
+            model.addAttribute("msg", "找不到主机");
+            return "login";
         }
 
 
     }
 
+    /**
+     * 使用shiro进行注销
+     *
+     * @return
+     */
     @RequestMapping("/logout")
     public String logout() {
         Subject subject = SecurityUtils.getSubject();
@@ -68,10 +88,19 @@ public class loginController {
         return "redirect:/";
     }
 
+    /**
+     * 接收前端传来的账户密码进行注册
+     *
+     * @param account
+     * @param password
+     * @param model
+     * @return
+     * @throws UnknownHostException
+     */
     @PostMapping("/register")
-    @ResponseBody
-    public String register() {
-        System.out.println("模拟注册");
-        return null;
+    public String register(@RequestParam("account") String account, @RequestParam("password") String password, Model model) throws UnknownHostException {
+        String msg = loginService.insertUserAndUserInfo(account, password);
+        model.addAttribute("msg", msg);
+        return "login";
     }
 }

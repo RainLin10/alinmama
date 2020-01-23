@@ -9,14 +9,31 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
 </head>
 <body>
-<span th:if="${session.userInfo!=null}">
-    <a href="/logout">注销</a>
-    <p th:text="${session.userInfo.getNick_name()}"></p>
-</span>
-<span th:if="${session.userInfo==null}">
-    <a href="/to_login">登录</a>
-</span>
+<span th:replace ="public/head :: head"></span>
+<div class="nav-scroller py-1 mb-2 mx-auto" style="width: 90%;">
+    <nav class="nav d-flex justify-content-between">
+        <a class="p-2 text-muted" href="#">World</a>
+        <a class="p-2 text-muted" href="#">U.S.</a>
+        <a class="p-2 text-muted" href="#">Technology</a>
+        <a class="p-2 text-muted" href="#">Design</a>
+        <a class="p-2 text-muted" href="#">Culture</a>
+        <a class="p-2 text-muted" href="#">Business</a>
+        <a class="p-2 text-muted" href="#">Politics</a>
+        <a class="p-2 text-muted" href="#">Opinion</a>
+        <a class="p-2 text-muted" href="#">Science</a>
+        <a class="p-2 text-muted" href="#">Health</a>
+        <a class="p-2 text-muted" href="#">Style</a>
+        <a class="p-2 text-muted" href="#">Travel</a>
+    </nav>
+</div>
 
-<a href="/admin/findAllUsers">管理员</a>
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light" style="background-image: url(/imgs/login_background_picture.jpg)">
+    <div class="col-md-5 p-lg-5 mx-auto my-5">
+        <h1 class="display-4 font-weight-normal">Punny headline</h1>
+        <p class="lead font-weight-normal">And an even wittier subheading to boot. Jumpstart your marketing efforts with this example based on Apple’s marketing pages.</p>
+        <a class="btn btn-outline-secondary" href="#">Coming soon</a>
+    </div>
+</div>
+
 </body>
 </html>

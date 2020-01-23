@@ -24,8 +24,6 @@ public class Mvc implements WebMvcConfigurer {
         registry.addViewController("/to_login").setViewName("login.html");
         //"/"默认是转发到"/index.html",但是"/index"并没有默认是转发到"/index.html"所以要配置以下
         registry.addViewController("/index").setViewName("index.html");
-        //这里接收login.html的a标签跳转 <a href="/to_register">还没有账户?</a>
-        registry.addViewController("/to_register").setViewName("register.html");
         //这是当用户没有访问权限时跳转的页面
         registry.addViewController("/unAuth").setViewName("unAuth.html");
 

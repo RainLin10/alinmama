@@ -9,24 +9,92 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
 </head>
 <body>
-
+<span th:include="public/head :: head"></span>
 <div class="container-fluid"
      style="border-radius:10px;box-shadow:0px 0px 16px 5px #ccc;width: 85%;margin-top: 50px;padding-bottom: 10px;">
 
     <ul class="nav">
         <li class="nav-item">
-            <a class="nav-link" href="../admin/findAllUsers">所有用户</a>
+            <a class="nav-link" href="../admin/findAllUsers?where=all">所有用户</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">所有商家</a>
+            <a class="nav-link" href="../admin/findAllUsers?where=business">所有商家</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="../admin/findAllUsers?where=admin">所有管理员</a>
         </li>
     </ul>
-    <div class="card col-2 text-center" th:each="user:${users}" style="margin-bottom: 10px;">
-        <div class="card-body">
-            <img class="card-img-top " alt="Card image" th:src="${user.avatar}" style="width: 100px;height: 100px;">
-            <b class="card-title" th:text="${user.nick_name}"></b>
-            <p class="card-text" th:text="${user.account}"></p>
-            <a href="#" class="btn btn-primary">查看</a>
+    <div class="row">
+        <div class="card col-2 text-center" th:each="user:${users}">
+            <div class="card-body">
+                <img class="card-img-top " alt="Card image" th:src="${user.avatar}" style="width: 100%;height: 100px;">
+                <p class="card-title" th:text="${user.nick_name}"></p>
+                <p class="card-text" th:text="${user.account}"></p>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" th:data-target="'#modal'+${user.user_id}">查看</button>
+            </div>
+            <!-- 个人信息模态框（Modal） -->
+            <div class="modal fade text-left" th:id="'modal'+${user.user_id}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="/admin/updateUserInfo" method="POST">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="myModalLabel" th:text="'用户id:'+${user.user_id}"></h4>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="form-group">
+                                    <label>账户:</label>
+                                    <input type="text" class="form-control" name="account" th:value="${user.account}" readonly="readonly">
+                                </div>
+                                <div class="form-group">
+                                    <label>昵称:</label>
+                                    <input type="text" class="form-control" name="nick_name" th:value="${user.nick_name}">
+                                </div>
+                                <div class="form-group">
+                                    <label>性别:</label>
+                                    <select class="form-control" name="gender">
+                                        <option value="女" th:selected="${user.gender}=='女'?'true':'false'">女</option>
+                                        <option value="男" th:selected="${user.gender}=='男'?'true':'false'">男</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>商家:</label>
+                                    <select class="form-control" name="isbusiness">
+                                        <option value="是" th:selected="${user.isBusiness}=='是'?'true':'false'">是</option>
+                                        <option value="否" th:selected="${user.isBusiness}=='否'?'true':'false'">否</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>上次登录:</label>
+                                    <input type="text" class="form-control" name="login_time" readonly="readonly"
+                                           th:value="${#dates.format(user.login_time, 'yyyy-MM-dd HH:mm')}">
+                                </div>
+                                <div class="form-group">
+                                    <label>登录ip:</label>
+                                    <input type="text" class="form-control" name="login_ip" readonly="readonly"
+                                           th:value="${user.login_ip}">
+                                </div>
+                                <div class="form-group">
+                                    <label>登录次数:</label>
+                                    <input type="text" class="form-control" name="login_times" readonly="readonly"
+                                    th:value="${user.login_times}">
+                                </div>
+                                <div class="form-group">
+                                    <label>注册时间:</label>
+                                    <input type="text" class="form-control" name="register_time" readonly="readonly"
+                                           th:value="${#dates.format(user.register_time, 'yyyy-MM-dd HH:mm')}">
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">注册</button>
+                                <a href="" class="btn btn-danger" style="color: white">删除账户</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

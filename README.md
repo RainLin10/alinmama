@@ -22,7 +22,7 @@
 | user_id  | int     | 5 | NOT NULL |  | PRIMARY KEY |
 | nick_name | vharchar | 255 |      |      |      |
 | introduction | vharchar | 255 | | | |
-| isbusiness | char | 1 | NOT NULL 否 | | |
+| isBusiness | char | 1 | NOT NULL 否 | | |
 | gender | char | 1 | NOT NULL 男 | | |
 | avatar | varchar | 255 |  | | |
 | register_time | bigint | 255 | NOT NULL | | |
@@ -66,11 +66,25 @@
 
 > 登录成功进入主页或者登陆失败返回登录页
 >
-> **/user/login** -----> **login.html**/**index.html**
+> **/login** -----> **login.html**/    **/**
 >
 > 注销后进入主页
 >
-> **/user/logout** -----> **index.html**
+> **/logout** -----> **index.html**
+>
+> 注册后进入登录页
+>
+> **/register** -----> **login.html**
+
+### AdminController
+
+> 进入管理员页面时查询所有用户
+>
+> **/admin/findAllUsers** -----> **admin.html**
+>
+> 在管理员页面修改用户信息
+>
+> **/admin/updateUserInfo** -----> **/admin/findAllUsers**
 
 # 用户权限设计
 
@@ -675,3 +689,9 @@ mybatis:
   mapper-locations: classpath:mybatis/mapper/*.xml  指定sql映射文件的位置
 ```
 
+## Bootstrap 
+
+```
+mx-auto//元素居中
+text-center//文本居中
+```
