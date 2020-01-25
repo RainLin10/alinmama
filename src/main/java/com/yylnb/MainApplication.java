@@ -4,6 +4,10 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.context.annotation.Bean;
+
+import javax.servlet.MultipartConfigElement;
 
 /**
  * @author RainLin
@@ -31,4 +35,7 @@ public class MainApplication {
         // Spring应用启动起来
         SpringApplication.run(MainApplication.class,args);
     }
+
+
+
 }

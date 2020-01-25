@@ -1,6 +1,7 @@
 package com.yylnb.test;
 
 import com.yylnb.config.RabbitMQ;
+import com.yylnb.entity.User;
 import com.yylnb.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,8 +40,5 @@ public class application {
     @Test
     public void test() {
 
-        Map<String,Object> map = new HashMap<>();
-        map.put("msg","123456111");
-        rabbitTemplate.convertAndSend("aaa",map);
     }
 }

@@ -24,7 +24,7 @@
     </li>
     <form class="form-inline">
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="搜索商品">
+      <input type="text" class="form-control" placeholder="大家都在搜:">
     </div>
   </form>
   </ul>
@@ -38,7 +38,7 @@
     <!-- 登录状态 -->
   <ul class="navbar-nav ml-auto" th:if="${session.userInfo!=null}">
     <li class="nav-item">
-        <a href="#" style="padding: 0;">
+        <a  href="/user_info" style="padding: 0;" >
          <img class="media-object img-thumbnail" style="height: 40px"
               th:src="${session.userInfo.getAvatar()}">
 
@@ -48,7 +48,7 @@
         <a class="nav-link" data-toggle="dropdown"
            th:text="${session.userInfo.getNick_name()}"></a>
          <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">个人信息</a>
+        <a class="dropdown-item" href="/user_info">个人信息</a>
         <a class="dropdown-item" href="/logout">注销</a>
         <a class="dropdown-item" href="/admin/findAllUsers?where=all"
            th:if="${session.userInfo.getRole()=='admin'}">管理员</a>

@@ -44,6 +44,8 @@
                             <div class="modal-body">
 
                                 <div class="form-group">
+                                    <input type="text" name="user_id" style="display: none" th:value="${user.user_id}"/>
+
                                     <label>账户:</label>
                                     <input type="text" class="form-control" name="account" th:value="${user.account}" readonly="readonly">
                                 </div>
@@ -88,8 +90,7 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">注册</button>
-                                <a href="" class="btn btn-danger" style="color: white">删除账户</a>
+                                <button type="submit" class="btn btn-primary">修改</button>
                             </div>
                         </form>
                     </div>

@@ -26,6 +26,8 @@ public class Mvc implements WebMvcConfigurer {
         registry.addViewController("/index").setViewName("index.html");
         //这是当用户没有访问权限时跳转的页面
         registry.addViewController("/unAuth").setViewName("unAuth.html");
+        //进入个人信息页面
+        registry.addViewController("/user_info").setViewName("user_info.html");
 
     }
 
@@ -39,8 +41,13 @@ public class Mvc implements WebMvcConfigurer {
          * 具体的处理方案由LoginInterceptor执行
          */
         registry.addInterceptor(new LoginInterceptor())
-                .addPathPatterns("/to_login","/login");
+                .addPathPatterns("/to_login", "/login");
     }
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //映射头像文件夹的路径
+        registry.addResourceHandler("/alinmam_avatar/**").addResourceLocations("file:D:/alinmam_avatar/");
+    }
 
 }

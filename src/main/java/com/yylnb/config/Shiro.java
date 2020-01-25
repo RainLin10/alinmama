@@ -61,6 +61,7 @@ public class Shiro {
         filterMap.put("/css/**", "anon");
         filterMap.put("/js/**", "anon");
         filterMap.put("/imgs/**", "anon");
+        filterMap.put("/alinmam_avatar/**","anon");
         //角色分类--------------------------------------------------
         //管理员
         filterMap.put("/admin/**", "roles[admin]");
@@ -118,7 +119,7 @@ public class Shiro {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         //设置session过期时间、是在没有任何访问的情况后开始计算
         // 经过测试 删除时也会删除自己设置的session [session.setAttribute("userInfo", userInfo);]
-        sessionManager.setGlobalSessionTimeout(1000 * 60 * 60);
+        sessionManager.setGlobalSessionTimeout(1000 * 60 * 60 * 24);
         sessionManager.setSessionValidationSchedulerEnabled(true);
         // 去掉shiro登录时url里的JSESSIONID
         sessionManager.setSessionIdUrlRewritingEnabled(false);

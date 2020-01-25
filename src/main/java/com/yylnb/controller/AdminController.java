@@ -2,11 +2,13 @@ package com.yylnb.controller;
 
 import com.yylnb.entity.User;
 import com.yylnb.service.AdminService;
+import com.yylnb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +21,8 @@ import java.util.List;
 public class AdminController {
     @Autowired
     AdminService adminService;
+    @Autowired
+    UserService userService;
 
     /**
      * 查询所有用户，进入admin.html的初始数据
@@ -39,9 +43,18 @@ public class AdminController {
      * @return
      */
     @PostMapping("/updateUserInfo")
-    public String updateUserInfo(@RequestParam("nick_name") String nick_name,@RequestParam("gender") String gender,@RequestParam("isbusiness") String isbusiness) {
-
-        return "redirect:/admin/findAllUsers";
+    public String updateUserInfo(@RequestParam("user_id") Integer user_id,
+                                 @RequestParam("nick_name") String nick_name,
+                                 @RequestParam("gender") String gender,
+                                 @RequestParam("isbusiness") String isbusiness,
+                                 HttpSession session) {
+        User user = new User();
+        user.setUser_id(user_id);
+        user.setNick_name(nick_name);
+        user.setGender(gender);
+        user.setIsBusiness(isbusiness);
+        userService.updateUserInfoById(user,session);
+        return "redirect:/admin/findAllUsers?where=all";
     }
 
 

@@ -24,9 +24,8 @@ public interface UserMapper {
      * @param id
      * @return
      */
-    @Select("SELECT ui.*,u.role FROM user_info ui INNER JOIN user u ON ui.user_id = u.id WHERE user_id=${id}")
+    @Select("SELECT ui.*,u.role,u.account FROM user_info ui INNER JOIN user u ON ui.user_id = u.id WHERE user_id=${id}")
     User findUserInfoById(@Param("id") Integer id);
-
 
 
     /**
@@ -44,10 +43,29 @@ public interface UserMapper {
 
     /**
      * 每次登录更新登录时间、登录次数、登录ip
+     *
      * @param user
      */
     @Update("UPDATE user_info SET login_time=#{login_time},login_times=login_times+1,login_ip=#{login_ip} WHERE user_id=#{user_id}")
     void updateUser_login(User user);
 
+
+    /**
+     * 根据user_id，更新
+     * 昵称、是否卖家、性别、登陆时间、登录次数、登录ip、个人介绍、头像
+     * @param user
+     */
+    @Update("UPDATE user_info SET nick_name=#{nick_name},isBusiness=#{isBusiness},gender=#{gender},login_time=#{login_time}," +
+            "login_times=#{login_times},login_ip=#{login_ip},introduction=#{introduction},avatar=#{avatar} WHERE user_id=#{user_id}")
+    void updateUserInfoById(User user);
+
+    /**
+     * 根据account，更新
+     * 昵称、是否卖家、性别、登陆时间、登录次数、登录ip、个人介绍、头像
+     * @param user
+     */
+    @Update("UPDATE user_info SET nick_name=#{nick_name},isBusiness=#{isBusiness},gender=#{gender},login_time=#{login_time}," +
+            "login_times=#{login_times},login_ip=#{login_ip},introduction=#{introduction},avatar=#{avatar} WHERE account=#{account}")
+    void updateUserInfoByAccount(User user);
 
 }

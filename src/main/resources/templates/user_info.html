@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${session.userInfo.nick_name}]]</title>
+    <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+    <script type="text/javascript">
+        function init() {
+            console.log(1)
+            $("#result").empty();
+        }
+
+        function ProcessFile(e) {
+            var file = document.getElementById('file').files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    var txt = event.target.result;
+
+                    var img = document.createElement("img");
+                    img.src = txt;//将图片base64字符串赋值给img的src
+                    img.width = 300;
+                    img.height = 300;
+                    // console.log(txt);
+                    document.getElementById("result").appendChild(img);
+                };
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function contentLoaded() {
+            document.getElementById('file').addEventListener('change',
+                ProcessFile, false);
+        }
+
+        window.addEventListener("DOMContentLoaded", contentLoaded, false);
+
+
+        //限制上传大小和类型
+        function fileChange(target, id) {
+            var fileSize = 0;
+            var filetypes = [".jpg", ".png"];
+            var filepath = target.value;
+            var filemaxsize = 1024;//1M
+            if (filepath) {
+                var isnext = false;
+                var fileend = filepath.substring(filepath.indexOf("."));
+                //检查是否为可上传类型
+                if (filetypes && filetypes.length > 0) {
+                    for (var i = 0; i < filetypes.length; i++) {
+                        if (filetypes[i] == fileend) {
+                            isnext = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isnext) {
+                    alert("不接受此文件类型！");
+                    target.value = "";
+                    return false;
+                }
+            } else {
+
+                return false;
+            }
+            //文件MAX
+            fileSize = target.files[0].size;
+            var size = fileSize / 1024;
+            if (size > filemaxsize) {
+                alert("附件大小不能大于" + filemaxsize / 1024 + "M！");
+                target.value = "";
+                //如果不和规范，隐藏上传按钮
+                $("#upload").css("display","none")
+                return false;
+            }else{
+                //当符合规范时，显示上传按钮
+                $("#upload").css("display","inline")
+            }
+
+
+        }
+    </script>
+</head>
+<body>
+<span th:replace="public/head :: head"></span>
+<div class="container-fluid"
+     style="border-radius:10px;box-shadow:0px 0px 16px 5px #ccc;width: 85%;margin-top: 50px;padding-bottom: 10px;margin-bottom: 50px;">
+    <!--第一行-->
+    <h3>你好!<span th:text="${session.userInfo.nick_name}"></span>，在这可以更改你的个人信息哦！</h3>
+    <hr>
+    <!--第二行-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <!--头像和更改头像按钮-->
+                <div style="width: 150px;height: 150px;">
+                    <img  th:src="${session.userInfo.avatar}" alt="tx" class="img-thumbnail"
+                         style="height: 150px;width: 150px;">
+                    <button class="btn btn-primary" style="width: 100%;" data-toggle="modal" data-target="#myModal">
+                        更换头像
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <!--个人信息-->
+                <form class="form-horizontal" action="/user/updateUserInfo" method="post">
+                    <!--账户名-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">账户名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="account" th:value="${session.userInfo.account}"
+                                   readonly="readonly">
+                        </div>
+                    </div>
+                    <!--昵称-->
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label class="col-sm-2 control-label">昵称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="nick_name" th:value="${session.userInfo.nick_name}">
+                        </div>
+                    </div>
+                    <!--签名-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">我的介绍</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="3" name="introduction"
+                                      th:text="${session.userInfo.introduction}"></textarea>
+                        </div>
+                    </div>
+                    <!--性别-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="gender">
+                                <option value="女" th:selected="${session.userInfo.gender}=='女'?'true':'false'">女
+                                </option>
+                                <option value="男" th:selected="${session.userInfo.gender}=='男'?'true':'false'">男
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <span class="alert alert-danger" role="alert" th:if="${msg!=null}" th:text="${msg}"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success" style="width: 100%;" id="updateUserInfo">提交</button>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label>更改密码</label>
+                            <button class="btn btn-primary" style="width: 100%;">更改密码</button>
+                        </div>
+                        <div class="col-md-6">
+                            <label>待定</label>
+                            <button class="btn btn-primary" style="width: 100%;">待定</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<!-- 选择头像（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/fileUpload" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">上传图片</h4>
+                </div>
+
+                <div class="modal-body ">
+                    <div id="result" style="width: 300px;height: 300px" class="mx-auto"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="file" name="file" id="file" onclick="init()" onchange="fileChange(this);"/>
+                    <input type="submit" value="上传" id="upload" style="display: none"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

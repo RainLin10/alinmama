@@ -2,6 +2,7 @@ package com.yylnb.controller;
 
 import com.yylnb.entity.User;
 import com.yylnb.service.LoginService;
+import com.yylnb.util.SessionUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
