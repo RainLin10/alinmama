@@ -56,17 +56,22 @@ public class Shiro {
         filterMap.put("/register", "anon");
         //注销
         filterMap.put("/logout", "logout");
+        //过渡页面
+        filterMap.put("/transition", "anon");
         //静态资源 设置为无需认证------------------------------------
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/css/**", "anon");
         filterMap.put("/js/**", "anon");
         filterMap.put("/imgs/**", "anon");
-        filterMap.put("/alinmam_avatar/**","anon");
+        //用户上传的头像文件夹
+        filterMap.put("/alinmama_avatar/**", "anon");
+        //用户上传的商品文件夹
+        filterMap.put("/alinmama_commodity/**", "anon");
         //角色分类--------------------------------------------------
         //管理员
         filterMap.put("/admin/**", "roles[admin]");
         //卖家
-        filterMap.put("/seller/**", "roles[service]");
+        filterMap.put("/seller/**", "roles[seller]");
         //购物
         filterMap.put("/apply/**", "roles[user,seller]");
         //客服

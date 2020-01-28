@@ -27,7 +27,6 @@ import javax.servlet.MultipartConfigElement;
  *                @Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
  */
 @SpringBootApplication
-@MapperScan("com.yylnb.mapper")
 @EnableRabbit//开启rabbit注解
 public class MainApplication {
     public static void main(String[] args) {

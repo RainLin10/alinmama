@@ -16,7 +16,6 @@ public class User {
     private Integer user_id;
     private String nick_name;
     private String introduction;
-    private String isBusiness;
     private String gender;
     private String avatar;
     private Long register_time;

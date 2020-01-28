@@ -45,6 +45,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
+        <!-- pagehelper分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.10</version>
+        </dependency>
+
 
         <!--导入配置文件处理器，配置文件进行绑定就会有提示-->
         <dependency>
@@ -99,11 +106,26 @@
             <artifactId>bootstrap</artifactId>
             <version>4.4.1</version>
         </dependency>
+        <!--富文本编辑器-->
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>wangEditor</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <!--文件上传插件-->
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>bootstrap-fileinput</artifactId>
+            <version>4.4.8</version>
+        </dependency>
         <!--html的导入
-    <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
+     <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
     <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
     <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
-    <link type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+    <script type="application/javascript" th:src="@{/webjars/bootstrap-fileinput/js/fileinput.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/wangEditor/release/wangEditor.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-fileinput/css/fileinput.css}">
         -->
     </dependencies>
     <!-- 这个插件，可以将应用打包成一个可执行的jar包；-->

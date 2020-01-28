@@ -15,5 +15,5 @@ public interface LoginService {
 
     String insertUserAndUserInfo(String account, String password) throws UnknownHostException;//注册
 
-    void updateForLogin(Integer id) throws UnknownHostException;
+    void updateForLogin(Integer id) throws UnknownHostException;//登陆时更新
 }

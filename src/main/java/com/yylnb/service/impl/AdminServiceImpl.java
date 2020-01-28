@@ -2,9 +2,12 @@ package com.yylnb.service.impl;
 
 import com.yylnb.entity.User;
 import com.yylnb.mapper.AdminMapper;
+import com.yylnb.mapper.UserMapper;
 import com.yylnb.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author RainLin
@@ -14,24 +17,21 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
     @Autowired
     AdminMapper adminMapper;
+    @Autowired
+    UserMapper userMapper;
 
     /**
-     * 查询所有用户
+     * 查询 按条件筛选后的用户 all=所有 business=卖家 admin=管理员
      *
      * @return
      */
     @Override
-    public User[] findAllUsers(String where) {
-        if (where.equals("all")) {
-            return adminMapper.findAllUsers();
-        } else if (where.equals("business")) {
-            return adminMapper.findAllBusiness();
-        } else if (where.equals("admin")) {
-            return adminMapper.findAllAdmin();
-        }
-        return adminMapper.findAllUsers();
+    public List<User> findAllUsers(String where) {
+        return adminMapper.findAllUsers(where);
 
     }
+
+
 
 
 }

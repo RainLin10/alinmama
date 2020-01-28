@@ -37,23 +37,56 @@
   </ul>
     <!-- 登录状态 -->
   <ul class="navbar-nav ml-auto" th:if="${session.userInfo!=null}">
+
+
+    <!--不是卖家，显示-->
+      <li class="nav-item" th:if="${session.userInfo.role!='seller'}">
+        <a class="nav-link" href="#">成为卖家</a>
+     </li>
+      <!--是卖家，显示-->
+        <li class="nav-item dropdown" th:if="${session.userInfo.role=='seller'}">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" style="color: #ffa300">
+            卖家中心
+          </a>
+          <div class="dropdown-menu">
+              <a class="dropdown-item" href="/seller/add_commodity">货物上架</a>
+              <a class="dropdown-item" href="#">出货订单</a>
+              <a class="dropdown-item" href="#">----</a>
+          </div>
+        </li>
+
+
+      <!--购物车-->
+      <li class="nav-item dropdown">
+          <a class="nav-link" href="#">
+            购物车
+          </a>
+
+        </li>
+      <!--头像-->
     <li class="nav-item">
-        <a  href="/user_info" style="padding: 0;" >
+        <a href="/user/user_info" style="padding: 0;">
          <img class="media-object img-thumbnail" style="height: 40px"
               th:src="${session.userInfo.getAvatar()}">
 
         </a>
      </li>
+      <!--昵称-->
      <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown"
            th:text="${session.userInfo.getNick_name()}"></a>
+
          <div class="dropdown-menu">
-        <a class="dropdown-item" href="/user_info">个人信息</a>
-        <a class="dropdown-item" href="/logout">注销</a>
-        <a class="dropdown-item" href="/admin/findAllUsers?where=all"
+        <a class="dropdown-item" href="/user/user_info">个人信息</a>
+        <a class="dropdown-item" href="/admin/findAllUsers?pn=1&where=all"
            th:if="${session.userInfo.getRole()=='admin'}">管理员</a>
       </div>
     </li>
+      <!--注销按钮-->
+      <li class="nav-item">
+         <a type="button" class="btn-sm btn-outline-danger " style="text-decoration:none;margin-top: 5.2px;"
+            href="/logout">注销</a>
+     </li>
   </ul>
 
 </nav>

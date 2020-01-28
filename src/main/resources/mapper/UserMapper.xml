@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yylnb.mapper.UserMapper">
+
+
+    <select id="findUserByAccount" resultType="user" parameterType="java.lang.String">
+    SELECT * FROM user WHERE account=${account}
+    </select>
+
+    <select id="findUserInfoById" resultType="user" parameterType="java.lang.Integer">
+   SELECT ui.*,u.* FROM user_info ui INNER JOIN user u ON ui.user_id = u.id WHERE user_id=${id}
+    </select>
+
+
+    <insert id="insertUser" parameterType="user">
+    INSERT INTO user(account,password,role) VALUES(#{account},#{password},#{role})
+    </insert>
+
+    <insert id="insertUserInfo" parameterType="user">
+    INSERT INTO user_info(user_id,nick_name,avatar,register_time,login_time,login_times,login_ip)
+    VALUES(#{user_id},#{nick_name},#{avatar},#{register_time},#{login_time},#{login_times},#{login_ip})
+    </insert>
+
+
+    <update id="updateUser_login" parameterType="user">
+    UPDATE user_info SET login_time=#{login_time},login_times=login_times+1,login_ip=#{login_ip} WHERE
+    user_id=#{user_id}
+    </update>
+
+
+    <update id="updateUserInfoById" parameterType="user">
+        UPDATE user_info
+        <set>
+            <if test="nick_name!=null and nick_name.trim()!=''">
+                nick_name=#{nick_name},
+            </if>
+            <if test="introduction!=null and introduction.trim()!=''">
+                introduction=#{introduction},
+            </if>
+            <if test="gender!=null and gender.trim()!=''">
+                gender=#{gender},
+            </if>
+            <if test="avatar!=null and avatar.trim()!=''">
+                avatar=#{avatar},
+            </if>
+
+        </set>
+        WHERE
+        user_id=#{user_id}
+    </update>
+
+    <update id="updateUserById" parameterType="user">
+        UPDATE user
+        <set>
+            <if test="role!=null and role.trim()!=''">
+                role=#{role},
+            </if>
+            <if test="password!=null and password.trim()!=''">
+                password=#{password},
+            </if>
+
+
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+
+</mapper>

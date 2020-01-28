@@ -6,83 +6,9 @@
     <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
     <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
     <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap-fileinput/js/fileinput.js}"></script>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
-    <script type="text/javascript">
-        function init() {
-            console.log(1)
-            $("#result").empty();
-        }
-
-        function ProcessFile(e) {
-            var file = document.getElementById('file').files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (event) {
-                    var txt = event.target.result;
-
-                    var img = document.createElement("img");
-                    img.src = txt;//将图片base64字符串赋值给img的src
-                    img.width = 300;
-                    img.height = 300;
-                    // console.log(txt);
-                    document.getElementById("result").appendChild(img);
-                };
-            }
-            reader.readAsDataURL(file);
-        }
-
-        function contentLoaded() {
-            document.getElementById('file').addEventListener('change',
-                ProcessFile, false);
-        }
-
-        window.addEventListener("DOMContentLoaded", contentLoaded, false);
-
-
-        //限制上传大小和类型
-        function fileChange(target, id) {
-            var fileSize = 0;
-            var filetypes = [".jpg", ".png"];
-            var filepath = target.value;
-            var filemaxsize = 1024;//1M
-            if (filepath) {
-                var isnext = false;
-                var fileend = filepath.substring(filepath.indexOf("."));
-                //检查是否为可上传类型
-                if (filetypes && filetypes.length > 0) {
-                    for (var i = 0; i < filetypes.length; i++) {
-                        if (filetypes[i] == fileend) {
-                            isnext = true;
-                            break;
-                        }
-                    }
-                }
-                if (!isnext) {
-                    alert("不接受此文件类型！");
-                    target.value = "";
-                    return false;
-                }
-            } else {
-
-                return false;
-            }
-            //文件MAX
-            fileSize = target.files[0].size;
-            var size = fileSize / 1024;
-            if (size > filemaxsize) {
-                alert("附件大小不能大于" + filemaxsize / 1024 + "M！");
-                target.value = "";
-                //如果不和规范，隐藏上传按钮
-                $("#upload").css("display","none")
-                return false;
-            }else{
-                //当符合规范时，显示上传按钮
-                $("#upload").css("display","inline")
-            }
-
-
-        }
-    </script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-fileinput/css/fileinput.css}">
 </head>
 <body>
 <span th:replace="public/head :: head"></span>
@@ -96,8 +22,8 @@
         <div class="row">
             <div class="col-md-2">
                 <!--头像和更改头像按钮-->
-                <div style="width: 150px;height: 150px;">
-                    <img  th:src="${session.userInfo.avatar}" alt="tx" class="img-thumbnail"
+                <div class="mx-auto" style="width: 150px;height: 150px;">
+                    <img th:src="${session.userInfo.avatar}" alt="tx" class="img-thumbnail"
                          style="height: 150px;width: 150px;">
                     <button class="btn btn-primary" style="width: 100%;" data-toggle="modal" data-target="#myModal">
                         更换头像
@@ -111,7 +37,8 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">账户名</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="account" th:value="${session.userInfo.account}"
+                            <input type="text" class="form-control" name="account"
+                                   th:value="${session.userInfo.account}"
                                    readonly="readonly">
                         </div>
                     </div>
@@ -119,7 +46,8 @@
                     <div class="form-group" style="margin-top: 10px;">
                         <label class="col-sm-2 control-label">昵称</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="nick_name" th:value="${session.userInfo.nick_name}">
+                            <input type="text" class="form-control" name="nick_name"
+                                   th:value="${session.userInfo.nick_name}" maxlength="6" required="required">
                         </div>
                     </div>
                     <!--签名-->
@@ -127,7 +55,7 @@
                         <label class="col-sm-2 control-label">我的介绍</label>
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="3" name="introduction"
-                                      th:text="${session.userInfo.introduction}"></textarea>
+                                      th:text="${session.userInfo.introduction}" maxlength="20"></textarea>
                         </div>
                     </div>
                     <!--性别-->
@@ -176,23 +104,51 @@
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/fileUpload" method="post" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">上传图片</h4>
-                </div>
-
-                <div class="modal-body ">
-                    <div id="result" style="width: 300px;height: 300px" class="mx-auto"></div>
-                </div>
-
-                <div class="modal-footer">
-                    <input type="file" name="file" id="file" onclick="init()" onchange="fileChange(this);"/>
-                    <input type="submit" value="上传" id="upload" style="display: none"/>
-                </div>
-            </form>
+            <input type="file" id="img" name="img">
         </div>
     </div>
 </div>
 
 </body>
+<!--fileInput-->
+<script>
+    $("#img").fileinput({
+        language: 'zh',
+        uploadUrl: "/file/img",
+        dropZoneTitle: '点击或拖拽文件到此处',
+        uploadExtraData: function () {
+            return {path: "alinmama_avatar"};
+        },//参数
+        showBrowse: false,//选取按钮
+        showUpload: true, //是否显示上传按钮
+        showRemove: false, //显示移除按钮
+        showCaption: false,//是否显示标题
+        autoReplace: false,
+        showClose: false,//关闭关闭按钮
+        minFileCount: 1,//最小
+        uploadAsync: true,//异步
+        maxFileCount: 1,//最大上传数量
+        browseOnZoneClick: true,//浏览区域单击选图片
+        maxFileSize: 1024,//图片的最大值
+        minFileSize: 1,//图片的最小值
+        msgFilesTooMany: "选择上传的文件数量 超过允许的最大数值！",
+        enctype: 'multipart/form-data',
+        // overwriteInitial: false,//不覆盖已上传的图片
+        allowedFileExtensions: ["jpg", "png"],
+        layoutTemplates: {
+            actionUpload: '',//去除上传预览缩略图中的上传图片
+            actionZoom: '',  //去除上传预览缩略图中的查看详情预览的缩略图标
+            actionDownload: '',//去除上传预览缩略图中的下载图标
+            actionDelete: '', //去除上传预览的缩略图中的删除图标
+        },
+    }).on("filebatchselected", function (event, files) {
+        //选取图片自动上传
+        $(this).fileinput("upload");
+    }).on("fileuploaded", function (event, data, previewId, index) {
+        //异步上传成功回调函数 刷新页面
+        window.location.reload()
+    })
+
+
+</script>
 </html>

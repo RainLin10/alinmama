@@ -9,5 +9,7 @@ import javax.servlet.http.HttpSession;
  * @date 2020/1/25 - 16:34
  */
 public interface UserService {
-    void updateUserInfoById(User user, HttpSession session);
+    void updateUserInfoById(User user);
+
+    void updateUserById(User user);
 }

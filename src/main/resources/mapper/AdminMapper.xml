@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yylnb.mapper.AdminMapper">
+
+    <select id="findAllUsers" resultType="user" parameterType="java.lang.String">
+        SELECT u.account,u.role,ui.* FROM user u INNER JOIN user_info ui ON u.id=ui.user_id
+        <where>
+            <if test="where  == 'all'">
+
+            </if>
+            <if test="where  == 'business'">
+                and u.role='seller'
+            </if>
+            <if test="where  == 'admin'">
+                and u.role='admin'
+            </if>
+            <if test="where  == 'service'">
+                and u.role='service'
+            </if>
+
+        </where>
+    </select>
+
+
+
+
+</mapper>

@@ -2,7 +2,6 @@ package com.yylnb.controller;
 
 import com.yylnb.entity.User;
 import com.yylnb.service.LoginService;
-import com.yylnb.util.SessionUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -58,7 +57,7 @@ public class LoginController {
             session.setAttribute("userInfo", userInfo);
             //如果是管理员账号，直接进入管理员页面
             if (user.getRole().equals("admin")) {
-                return "redirect:/admin/findAllUsers?where=all";
+                return "redirect:/admin/findAllUsers?pn=1&where=all";
             }
             return "redirect:/";
         } catch (UnknownAccountException e) {

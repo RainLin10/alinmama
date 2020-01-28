@@ -15,7 +15,6 @@ public interface UserMapper {
      * @param account
      * @return
      */
-    @Select("SELECT * FROM user WHERE account='${account}'")
     User findUserByAccount(@Param("account") String account);
 
     /**
@@ -24,7 +23,6 @@ public interface UserMapper {
      * @param id
      * @return
      */
-    @Select("SELECT ui.*,u.role,u.account FROM user_info ui INNER JOIN user u ON ui.user_id = u.id WHERE user_id=${id}")
     User findUserInfoById(@Param("id") Integer id);
 
 
@@ -33,11 +31,9 @@ public interface UserMapper {
      *
      * @param user
      */
-    @Insert("INSERT INTO user(account,password,role) VALUES(#{account},#{password},#{role})")
     void insertUser(User user);
 
 
-    @Insert("INSERT INTO user_info(user_id,nick_name,avatar,register_time,login_time,login_times,login_ip) VALUES(#{user_id},#{nick_name},#{avatar},#{register_time},#{login_time},#{login_times},#{login_ip})")
     void insertUserInfo(User userInfo);
 
 
@@ -46,7 +42,6 @@ public interface UserMapper {
      *
      * @param user
      */
-    @Update("UPDATE user_info SET login_time=#{login_time},login_times=login_times+1,login_ip=#{login_ip} WHERE user_id=#{user_id}")
     void updateUser_login(User user);
 
 
@@ -55,17 +50,13 @@ public interface UserMapper {
      * 昵称、是否卖家、性别、登陆时间、登录次数、登录ip、个人介绍、头像
      * @param user
      */
-    @Update("UPDATE user_info SET nick_name=#{nick_name},isBusiness=#{isBusiness},gender=#{gender},login_time=#{login_time}," +
-            "login_times=#{login_times},login_ip=#{login_ip},introduction=#{introduction},avatar=#{avatar} WHERE user_id=#{user_id}")
     void updateUserInfoById(User user);
 
     /**
-     * 根据account，更新
-     * 昵称、是否卖家、性别、登陆时间、登录次数、登录ip、个人介绍、头像
+     * 根据id更新user表
      * @param user
      */
-    @Update("UPDATE user_info SET nick_name=#{nick_name},isBusiness=#{isBusiness},gender=#{gender},login_time=#{login_time}," +
-            "login_times=#{login_times},login_ip=#{login_ip},introduction=#{introduction},avatar=#{avatar} WHERE account=#{account}")
-    void updateUserInfoByAccount(User user);
+
+    void updateUserById(User user);
 
 }
