@@ -1,7 +1,7 @@
 package com.yylnb.shiro;
 
 import com.yylnb.entity.User;
-import com.yylnb.service.LoginService;
+import com.yylnb.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Slf4j
 public class UserRealm extends AuthorizingRealm {
     @Autowired
-    LoginService loginService;
+    UserService userService;
 
     /**
      * 执行授权逻辑
@@ -54,7 +54,7 @@ public class UserRealm extends AuthorizingRealm {
         //取出用户名
         String account = usernamePasswordToken.getUsername();
         //根据用户名去数据找用户相关信息
-        User user = loginService.findUserByAccount(account);
+        User user = userService.findUserByAccount(account);
         if (user == null) {
             //用户不存在则返回空，前台会报无用户异常
             return null;

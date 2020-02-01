@@ -17,9 +17,11 @@
      style="border-radius:10px;box-shadow:0px 0px 16px 5px #ccc;width: 85%;margin-top: 50px;padding-bottom: 10px;">
 
     <form action="/seller/add" method="POST" enctype="multipart/form-data">
-        <!--user_id-->
+        <!--user_id nick_name-->
         <input name="user_id" style="display: none" th:value="${session.userInfo.user_id}">
+        <input name="nick_name" style="display: none" th:value="${session.userInfo.nick_name}">
         <!--img-->
+        <h3 class="mx-auto text-center" style="color: red;margin-bottom: 50px;width: 600px;">上架成功后，交由客服审核，通过后会显示</h3>
         <div class="form-group">
             <label>商品展示图:</label>
             <!--此input负责将图片上传到图片文件夹 会返回地址存入下面一个input-->

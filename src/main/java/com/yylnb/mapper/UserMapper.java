@@ -3,6 +3,9 @@ package com.yylnb.mapper;
 import com.yylnb.entity.User;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author RainLin
  * @date 2020/1/19 - 15:53
@@ -48,15 +51,34 @@ public interface UserMapper {
     /**
      * 根据user_id，更新
      * 昵称、是否卖家、性别、登陆时间、登录次数、登录ip、个人介绍、头像
+     *
      * @param user
      */
     void updateUserInfoById(User user);
 
     /**
      * 根据id更新user表
+     *
      * @param user
      */
 
     void updateUserById(User user);
+
+
+    /**
+     * 查询所有用户
+     *
+     * @return
+     */
+    List<User> findAllUsers(@Param("role") String role);
+
+    /**
+     * 根据redis中查询的id集合查找用户
+     *
+     * @param ids
+     * @return
+     */
+    List<User> findUsersByIds(@Param("ids") Set ids);
+
 
 }

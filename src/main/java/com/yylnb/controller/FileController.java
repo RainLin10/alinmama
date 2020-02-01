@@ -67,7 +67,7 @@ public class FileController {
             //取出session信息，覆盖上新的头像地址，并存入数据库
             User userInfo = (User) session.getAttribute("userInfo");
             userInfo.setAvatar("/" + path + "/" + fileName);
-            userService.updateUserInfoById(userInfo);
+            userService.updateUserAndUserInfoById(userInfo);
             session.setAttribute("userInfo", userInfo);
             //日志
             log.info("用户[" + userInfo.getNick_name() + "]:更新了头像,地址[" + "/" + path + "/" + fileName + "]");

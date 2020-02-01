@@ -15,7 +15,8 @@
 <div class="container-fluid"
      style="border-radius:10px;box-shadow:0px 0px 16px 5px #ccc;width: 85%;margin-top: 50px;padding-bottom: 10px;margin-bottom: 50px;">
     <!--第一行-->
-    <h3>你好!<span th:text="${session.userInfo.nick_name}"></span>，在这可以更改你的个人信息哦！</h3>
+
+    <h3 th:if="${session.userInfo.user_id==userInfo.user_id}">你好!<span th:text="${userInfo.nick_name}" ></span>，在这可以更改你的个人信息哦！</h3>
     <hr>
     <!--第二行-->
     <div class="container-fluid">
@@ -23,9 +24,10 @@
             <div class="col-md-2">
                 <!--头像和更改头像按钮-->
                 <div class="mx-auto" style="width: 150px;height: 150px;">
-                    <img th:src="${session.userInfo.avatar}" alt="tx" class="img-thumbnail"
+                    <img th:src="${userInfo.avatar}" alt="tx" class="img-thumbnail"
                          style="height: 150px;width: 150px;">
-                    <button class="btn btn-primary" style="width: 100%;" data-toggle="modal" data-target="#myModal">
+                    <button class="btn btn-primary" style="width: 100%;" data-toggle="modal" data-target="#myModal"
+                            th:if="${session.userInfo.user_id==userInfo.user_id}">
                         更换头像
                     </button>
                 </div>
@@ -34,11 +36,11 @@
                 <!--个人信息-->
                 <form class="form-horizontal" action="/user/updateUserInfo" method="post">
                     <!--账户名-->
-                    <div class="form-group">
+                    <div class="form-group" th:if="${session.userInfo.user_id==userInfo.user_id}">
                         <label class="col-sm-2 control-label">账户名</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="account"
-                                   th:value="${session.userInfo.account}"
+                                   th:value="${userInfo.account}"
                                    readonly="readonly">
                         </div>
                     </div>
@@ -47,7 +49,10 @@
                         <label class="col-sm-2 control-label">昵称</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="nick_name"
-                                   th:value="${session.userInfo.nick_name}" maxlength="6" required="required">
+                                   th:if="${session.userInfo.user_id==userInfo.user_id}"
+                                   th:value="${userInfo.nick_name}" maxlength="6" required="required">
+                            <p class="form-control" th:if="${session.userInfo.user_id!=userInfo.user_id}">
+                                [[${userInfo.nick_name}]]</p>
                         </div>
                     </div>
                     <!--签名-->
@@ -55,22 +60,28 @@
                         <label class="col-sm-2 control-label">我的介绍</label>
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="3" name="introduction"
-                                      th:text="${session.userInfo.introduction}" maxlength="20"></textarea>
+                                      th:if="${session.userInfo.user_id==userInfo.user_id}"
+                                      th:text="${userInfo.introduction}" maxlength="20"></textarea>
+                            <p class="form-control" th:if="${session.userInfo.user_id!=userInfo.user_id}">
+                                [[${userInfo.introduction}]]</p>
                         </div>
                     </div>
                     <!--性别-->
                     <div class="form-group">
                         <label class="col-sm-2 control-label">性别</label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="gender">
-                                <option value="女" th:selected="${session.userInfo.gender}=='女'?'true':'false'">女
+                            <select class="form-control" name="gender"
+                                    th:if="${session.userInfo.user_id==userInfo.user_id}">
+                                <option value="女" th:selected="${userInfo.gender}=='女'?'true':'false'">女
                                 </option>
-                                <option value="男" th:selected="${session.userInfo.gender}=='男'?'true':'false'">男
+                                <option value="男" th:selected="${userInfo.gender}=='男'?'true':'false'">男
                                 </option>
                             </select>
+                            <p class="form-control" th:if="${session.userInfo.user_id!=userInfo.user_id}">
+                                [[${userInfo.gender}]]</p>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" th:if="${session.userInfo.user_id==userInfo.user_id}">
                         <div class="col-md-10">
                             <span class="alert alert-danger" role="alert" th:if="${msg!=null}" th:text="${msg}"></span>
                         </div>
@@ -80,7 +91,7 @@
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="form-group" th:if="${session.userInfo.user_id==userInfo.user_id}">
                         <div class="col-md-6">
                             <label>更改密码</label>
                             <button class="btn btn-primary" style="width: 100%;">更改密码</button>

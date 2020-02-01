@@ -45,20 +45,32 @@
 | id | int | 10 | NOT NULL | AUTO_INCREMENT | PRIMARY KEY |
 | user_id  | int     | 5 | NOT NULL |  |  |
 | name | varchar | 255 | NOT NULL |      |      |
-| introduction | varchar | 255 | | | |
+| introduction | varchar | 255 | NOT NULL | | |
 | price | decimal | 7，2 | NOT NULL | | |
-| carousel | varchar | 4 294 967 295 | NOT NULL | | |
+| carousel | varchar |  | NOT NULL | | |
+| state | int | 1 | NOT NULL 0 | | |
+| nick_name | varchar | 255 | NOT NULL | | |
+
+## Redis的使用
+
+| Set                                                          |      |      |      |      |      |      |      |      |
+| ------------------------------------------------------------ | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| key:"apply_seller"<br />value:用户id集合<br />注释:正在申请卖家资格的id集合 |      |      |      |      |      |      |      |      |
+| key:"user"+用户id+"commodity_car"<br />value:商品id集合<br />注释:用户的购物车商品id集合 |      |      |      |      |      |      |      |      |
+| key:"user"+用户id+"commodity"<br />value:商品id集合<br />注释:用户的订单商品id集合 |      |      |      |      |      |      |      |      |
+| key:"commodity"+商品id+"user"<br />value用户id集合<br />注释:购物某商品的所有用户集合 |      |      |      |      |      |      |      |      |
+|                                                              |      |      |      |      |      |      |      |      |
+|                                                              |      |      |      |      |      |      |      |      |
+|                                                              |      |      |      |      |      |      |      |      |
+|                                                              |      |      |      |      |      |      |      |      |
 
 
-## Redis
 
-用户token
 
-首页缩略图
 
-商品图
 
-...
+
+
 
 # 请求设计
 
@@ -962,40 +974,5 @@ $('#uploadImg').on('filebatchuploadcomplete',function (event,files,extra) {
 
 
 
- PageInfo
-
-{pageNum=1, pageSize=10, size=10, startRow=0, endRow=9, total=10, pages=1, 
-
-list=[
-
-User(id=null, account=795988, password=null, role=admin, user_id=1, nick_name=超管, introduction=hahaha, gender=男, avatar=/alinmama_avatar/818bad6e-4b4c-4f48-9587-510ee121cf45.jpg, register_time=1579680963099, login_time=1580193922248, login_times=133, login_ip=192.168.1.4),
-
- User(id=null, account=790040052, password=null, role=user, user_id=2, nick_name=用户1579681163, introduction=null, gender=男, avatar=/imgs/avatar.jpg, register_time=1579681163004, login_time=1579681163004, login_times=1, login_ip=192.168.1.5), 
-
-User(id=null, account=secret, password=null, role=user, user_id=3, nick_name=用户1579681334, introduction=null, gender=男, avatar=/imgs/avatar.jpg, register_time=1579681334777, login_time=1579762652746, login_times=3, login_ip=192.168.1.5), 
-
-User(id=null, account=secret1, password=null, role=user, user_id=4, nick_name=用户1579681510, introduction=null, gender=男, avatar=/imgs/avatar.jpg, register_time=1579681510228, login_time=1579681510228, login_times=1, login_ip=192.168.1.5), 
-
-User(id=null, account=lenox, password=null, role=user, user_id=5, nick_name=用户1579683651, introduction=null, gender=男, avatar=/imgs/avatar.jpg, register_time=1579683651467, login_time=1579749711149, login_times=2, login_ip=192.168.1.5), 
-
-User(id=null, account=unaliq, password=null, role=user, user_id=6, nick_name=用户1579708130, introduction=null, gender=男, avatar=/imgs/avatar.jpg, register_time=1579708130022, login_time=1579708130022, login_times=1, login_ip=192.168.1.5), 
-
-User(id=null, account=hahah, password=null, role=user, user_id=7, nick_name=用户1579708137, introduction=null, gender=男, avatar=/imgs/avatar.jpg, register_time=1579708137260, login_time=1579708137260, login_times=1, login_ip=192.168.1.5), 
-
-User(id=null, account=222222, password=null, role=user, user_id=8, nick_name=用户1580043646, introduction=null, gender=男, avatar=/imgs/avatar.jpg, register_time=1580043646356, login_time=1580043646356, login_times=1, login_ip=192.168.1.3), 
-
-User(id=null, account=123, password=null, role=service, user_id=9, nick_name=老客服, introduction=我是客服, gender=男, avatar=/alinmama_avatar/f33dd081-8f2e-4d03-9886-110c345a0cb9.png, register_time=1580043693875, login_time=1580183091472, login_times=5, login_ip=192.168.1.4), 
-
-User(id=null, account=321, password=null, role=seller, user_id=10, nick_name=老卖家, introduction=11, gender=男, avatar=/alinmama_avatar/13fdbd26-3950-42ae-8bde-7ff62d6b4388.jpg, register_time=1580106390828, login_time=1580193109004, login_times=53, login_ip=192.168.1.4)], 
-
-prePage=0, nextPage=0, isFirstPage=true, isLastPage=true, hasPreviousPage=false, hasNextPage=false, navigatePages=5, navigateFirstPage=1, navigateLastPage=1, navigatepageNums=[1]} 
 
 
-
-```
-alinmam_commodity
-```
-
-<p>12312</p><p><img src="/alinmama_commodity/44228556-cb84-4499-a8fc-3ebd85f39ebb.jpg" style="max-width:100%;"><br></p><p><img src="/alinmama_commodity/bcca8b3d-fe61-425b-a5eb-f1cc3f04ae03.jpg" style="max-width:100%;"><br></p>
-
-/alinmama_commodity/79ca90a5-1193-43a9-953d-e0d8221a4708.jpg,/alinmama_commodity/89e22f30-b080-48da-bff0-86dcf7eedac7.png,/alinmama_commodity/a9e68743-e956-4fe1-95d5-9f9926680dff.png,/alinmama_commodity/e142b955-9270-4b5b-9f03-ade02a3d586f.png,/alinmama_commodity/ec41ca8e-1ede-4032-8e81-03e915e1ddb3.png

@@ -1,7 +1,7 @@
 package com.yylnb.controller;
 
 import com.yylnb.entity.User;
-import com.yylnb.service.LoginService;
+import com.yylnb.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -24,7 +24,7 @@ import java.net.UnknownHostException;
 @Controller
 public class LoginController {
     @Autowired
-    LoginService loginService;
+    UserService userService;
 
     /**
      * 接收前端传来的账户和密码使用shiro进行登录校验,登录成功则存入session相关的用户信息，登陆失败则用model返回相关提示信息
@@ -50,14 +50,14 @@ public class LoginController {
             User user = (User) subject.getPrincipal();
             Integer id = user.getId();
             //登录成功后更新相关信息
-            loginService.updateForLogin(id);
+            userService.updateForLogin(id);
             //根据id查找到用户的所有信息
-            User userInfo = loginService.findUserInfoById(id);
+            User userInfo = userService.findUserInfoById(id);
             //将信息传入session
             session.setAttribute("userInfo", userInfo);
             //如果是管理员账号，直接进入管理员页面
             if (user.getRole().equals("admin")) {
-                return "redirect:/admin/findAllUsers?pn=1&where=all";
+                return "redirect:/admin/findAllUsers/all/1";
             }
             return "redirect:/";
         } catch (UnknownAccountException e) {
@@ -99,7 +99,7 @@ public class LoginController {
      */
     @PostMapping("/register")
     public String register(@RequestParam("account") String account, @RequestParam("password") String password, Model model) throws UnknownHostException {
-        String msg = loginService.insertUserAndUserInfo(account, password);
+        String msg = userService.insertUserAndUserInfo(account, password);
         model.addAttribute("msg", msg);
         return "login";
     }

@@ -3,7 +3,6 @@ package com.yylnb.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yylnb.entity.User;
-import com.yylnb.service.AdminService;
 import com.yylnb.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,6 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
-    AdminService adminService;
-    @Autowired
     UserService userService;
 
     /**
@@ -32,18 +29,21 @@ public class AdminController {
      * @param model
      * @return
      */
-    @RequestMapping("/findAllUsers")
-    public String findAllUsers(@RequestParam("pn") Integer pn,
-                               @RequestParam("where") String where, Model model) {
-        //使用分页插件，pn是页面传来的页码，6为每页最大显示数
-        PageHelper.startPage(pn, 20);
+    @RequestMapping("/findAllUsers/{role}/{pn}")
+    public String findAllUsers(@PathVariable("pn") Integer pn,
+                               @PathVariable("role") String role,
+                               Model model) {
+        //使用分页插件，pn是页面传来的页码，pageSize:一页多少个数据
+        PageHelper.startPage(pn, 12);
         //获取所有用户
-        List<User> userInfos = adminService.findAllUsers(where);
-        //包装所有员工，获得更多方法，5为显示5个页码
-        PageInfo page = new PageInfo(userInfos, 5);
+        List<User> userInfos = userService.findAllUsers(role);
+        //包装所有员工，获得更多方法，navigatePages:页码的显示个数
+        PageInfo page = new PageInfo(userInfos, 10);
         model.addAttribute("users", page);
-        model.addAttribute("where",where);
-        return "admin";
+        model.addAttribute("role", role);
+        model.addAttribute("title", "管理员页面");
+        model.addAttribute("whoYou", "admin");
+        return "user";
     }
 
     /**
@@ -56,6 +56,8 @@ public class AdminController {
                                  @RequestParam("nick_name") String nick_name,
                                  @RequestParam("gender") String gender,
                                  @RequestParam("role") String role,
+                                 @RequestParam("page") String page,//因为和role重名改为page 作用是在操作完成回到操作时的页面
+                                 @RequestParam("pn") Integer pn,//操作完成回到操作时的页码
                                  HttpSession session,
                                  Model model) {
         if (nick_name.equals("")) {
@@ -67,8 +69,7 @@ public class AdminController {
         user.setGender(gender);
         user.setId(user_id);
         user.setRole(role);
-        userService.updateUserInfoById(user);
-        userService.updateUserById(user);
+        userService.updateUserAndUserInfoById(user);
 
 
         //如果更改的是自己的信息 则更新session、[不必要代码！]
@@ -80,7 +81,7 @@ public class AdminController {
             userInfo.setRole(role);
             session.setAttribute("userInfo", userInfo);
         }
-        return "redirect:/admin/findAllUsers?where=all";
+        return "redirect:/admin/findAllUsers/" + page + "/" + pn;
     }
 
 

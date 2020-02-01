@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>管理员页面</title>
+    <title>[[${title}]]</title>
     <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
     <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
     <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
@@ -10,47 +10,94 @@
 </head>
 <body>
 <span th:include="public/head :: head"></span>
+<!--页面需要的变量
+title 页面标题
+users 商品
+whoYou 角色-->
 <div class="container-fluid"
      style="border-radius:10px;box-shadow:0px 0px 16px 5px #ccc;width: 85%;margin-top: 50px;padding-bottom: 10px;">
-
-    <ul class="nav">
+    <!--角色admin-->
+    <ul class="nav" th:if="${whoYou=='admin'}">
         <li class="nav-item">
-            <a class="nav-link" href="../admin/findAllUsers?pn=1&where=all">所有用户</a>
+            <a class="nav-link" href="../../../admin/findAllUsers/all/1">所有用户</a>
+        </li>
+        <li class=" nav-item">
+            <a class="nav-link" href="../../../admin/findAllUsers/seller/1">所有商家</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="../admin/findAllUsers?pn=1&where=business">所有商家</a>
+            <a class="nav-link" href="../../../admin/findAllUsers/admin/1">所有管理员</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="../admin/findAllUsers?pn=1&where=admin">所有管理员</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="../admin/findAllUsers?pn=1&where=service">所有客服</a>
+            <a class="nav-link" href="../../../admin/findAllUsers/service/1">所有客服</a>
         </li>
     </ul>
+
+    <!--角色service-->
+    <ul class="nav" th:if="${whoYou=='service'}">
+        <li class="nav-item">
+            <a class="nav-link" href="../../../service/findAllUsers/apply_seller/1">申请卖家资格的用户</a>
+        </li>
+        <!--        <li class="nav-item">-->
+        <!--            <a class="nav-link" href="../admin/findAllUsers?pn=1&role=seller">所有商家</a>-->
+        <!--        </li>-->
+        <!--        <li class="nav-item">-->
+        <!--            <a class="nav-link" href="../admin/findAllUsers?pn=1&role=admin">所有管理员</a>-->
+        <!--        </li>-->
+        <!--        <li class="nav-item">-->
+        <!--            <a class="nav-link" href="../admin/findAllUsers?pn=1&role=service">所有客服</a>-->
+        <!--        </li>-->
+    </ul>
+    <!--公共user显示-->
     <div class="row">
         <div class="card col-2 text-center" th:each="user:${users.list}">
             <div class="card-body">
-                <img class="card-img-top " alt="Card image" th:src="${user.avatar}" style="width: 100%;height: 100px;">
+                <a th:href="'/user/'+${user.user_id}"><img class="card-img-top " alt="Card image"
+                                                           th:src="${user.avatar}"
+                                                           style="width: 100%;height: 100px;"></a>
                 <p class="card-title" th:text="${user.nick_name}"></p>
                 <p class="card-text" th:text="${user.account}"></p>
                 <button class="btn btn-sm btn-primary" data-toggle="modal" th:data-target="'#modal'+${user.user_id}">
                     查看
                 </button>
             </div>
-            <!-- 个人信息模态框（Modal） -->
+            <!--模态框-->
             <div class="modal fade text-left" th:id="'modal'+${user.user_id}" tabindex="-1" role="dialog"
                  aria-labelledby="myModalLabel">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form action="/admin/updateUserInfo" method="POST">
+                        <!-- 根据角色的不同 分为两类
+                           当角色为admin时:
+                           表单的提交地址  /admin/updateUserInfo
+                           input 昵称 性别 角色 readonly:false
+                           input page [管理员专用] 当前页面的用户角色分类
+                           submit按钮为修改
+
+                           当角色为service时:
+                           表单的提交地址
+                           input 昵称 性别 角色 readonly:true
+                           input key [客服专用] 当前页面的用户角色分类
+                           submit按钮为通过
+
+                           不受角色限制能提交的信息有
+                           user_id 选中用户的信息表id
+                           pn 当前页码
+
+
+
+                          -->
+                        <form th:action="${whoYou=='admin'?'/admin/updateUserInfo':'/service/updateUserInfo'}"
+                              method="POST">
                             <div class="modal-header">
                                 <h4 class="modal-title" id="myModalLabel" th:text="'用户id:'+${user.user_id}"></h4>
                             </div>
-
                             <div class="modal-body">
-
                                 <div class="form-group">
+                                    <!--附带信息-->
                                     <input type="text" name="user_id" style="display: none" th:value="${user.user_id}"/>
+                                    <input type="text" name="pn" style="display: none"
+                                           th:value=" ${users.pageNum}"/>
+                                    <input type="text" th:name="${whoYou=='admin'?'page':'key'}" style="display: none"
+                                           th:value=" ${whoYou=='admin'?role:key}"/>
 
                                     <label>账户:</label>
                                     <input type="text" class="form-control" name="account" th:value="${user.account}"
@@ -59,11 +106,13 @@
                                 <div class="form-group">
                                     <label>昵称:</label>
                                     <input type="text" class="form-control" name="nick_name"
+                                           th:readonly="${whoYou=='service'?'true':'false'}"
                                            th:value="${user.nick_name}" maxlength="6" required="required">
                                 </div>
                                 <div class="form-group">
                                     <label>性别:</label>
-                                    <select class="form-control" name="gender">
+                                    <select class="form-control" name="gender"
+                                            th:readonly="${whoYou=='service'?'true':'false'}">
                                         <option value="女" th:selected="${user.gender}=='女'?'true':'false'">女</option>
                                         <option value="男" th:selected="${user.gender}=='男'?'true':'false'">男</option>
                                     </select>
@@ -71,13 +120,12 @@
                                 <div class="form-group">
                                     <label>角色:</label>
                                     <select class="form-control" name="role"
-                                            th:disabled="${user.role}=='admin'?'true':'false'">
+                                            th:readonly="${whoYou=='service'?'true':'false'}">
                                         <option value="user" th:selected="${user.role}=='user'?'true':'false'">用户
                                         </option>
                                         <option value="admin" th:selected="${user.role}=='admin'?'true':'false'">管理员
                                         </option>
-                                        <option value="service" th:selected="${user.role}=='service'?'true':'false'">
-                                            客服
+                                        <option value="service" th:selected="${user.role}=='service'?'true':'false'">客服
                                         </option>
                                         <option value="seller" th:selected="${user.role}=='seller'?'true':'false'">卖家
                                         </option>
@@ -103,20 +151,30 @@
                                     <input type="text" class="form-control" name="register_time" readonly="readonly"
                                            th:value="${#dates.format(user.register_time, 'yyyy-MM-dd HH:mm')}">
                                 </div>
+                                <div class="form-group" th:if="${whoYou=='service'}">
+                                    <label>处理:</label>
+                                    <select class="form-control" name="result">
+                                        <option value="pass">通过</option>
+                                        <option value="lose">退回</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">修改</button>
+                                <button type="submit" class="btn btn-primary"
+                                        th:text="${whoYou=='admin'?'修改':'处理'}"></button>
                             </div>
+
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <h3 class="mx-auto text-center" th:if="${users.total==0}" style="width: 300px;">暂无</h3>
 
-    <!-- 显示分页信息 -->
-    <div class="row">
+    <!-- 角色admin显示分页信息 -->
+    <div class="row" th:if="${whoYou=='admin'}">
         <!-- 分页文字信息 -->
         <div class="col-md-6">
             当前第<span style="color: cornflowerblue">[[${users.pageNum}]]</span>页,
@@ -128,7 +186,7 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <!--首页-->
-                    <li><a th:href="'/admin/findAllUsers?pn=1&where='+${where}">首页</a></li>
+                    <li><a th:href="'/admin/findAllUsers/'+${role}+'/1'">首页</a></li>
 
 
                     <!--页码-->
@@ -137,13 +195,47 @@
                             <li><a href="#">[[${currentPageNum}]]</a></li>
                         </div>
                         <div th:if="${currentPageNum != users.pageNum}" style="margin-left: 10px;">
-                            <li><a th:href="'/admin/findAllUsers?pn='+${currentPageNum}+'&where='+${where}">[[${currentPageNum}]]</a>
+                            <li>
+                                <a th:href="'/admin/findAllUsers/'+${role}+'/'+${currentPageNum}">[[${currentPageNum}]]</a>
                             </li>
                         </div>
                     </div>
 
 
-                    <li><a th:href="'/admin/findAllUsers?pn='+${users.pages}+'&where='+${where}" style="margin-left: 10px;">末页</a></li>
+                    <li><a th:href="'/admin/findAllUsers/'+${role}+'/'+${users.pages}"
+                           style="margin-left: 10px;">末页</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 角色service显示分页信息 -->
+    <div class="row" th:if="${whoYou=='service'}">
+        <!-- 分页文字信息 -->
+        <div class="col-md-6">
+            当前第<span style="color: cornflowerblue">[[${users.pageNum}]]</span>页,
+            总<span style="color: cornflowerblue">[[${users.pages}]]</span>页,
+            总共有<span style="color: cornflowerblue">[[${users.total}]]</span>条记录
+        </div>
+        <!-- 分页条信息 -->
+        <div class="col-md-6">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <!--首页-->
+                    <li><a th:href="'/service/findAllUsers/'+${key}+'/1'">首页</a></li>
+                    <!--页码-->
+                    <div th:each="currentPageNum:${users.navigatepageNums }">
+                        <div th:if="${currentPageNum==users.pageNum}" style="margin-left: 10px;">
+                            <li><a href="#">[[${currentPageNum}]]</a></li>
+                        </div>
+                        <div th:if="${currentPageNum != users.pageNum}" style="margin-left: 10px;">
+                            <li>
+                                <a th:href="'/service/findAllUsers/'+${key}+'/'+${currentPageNum}">[[${currentPageNum}]]</a>
+                            </li>
+                        </div>
+                    </div>
+                    <li><a th:href="'/service/findAllUsers/'+${key}+'/'+${users.pages}"
+                           style="margin-left: 10px;">末页</a></li>
                 </ul>
             </nav>
         </div>

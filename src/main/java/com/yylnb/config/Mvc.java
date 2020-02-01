@@ -25,16 +25,13 @@ public class Mvc implements WebMvcConfigurer {
          */
         //接收从shiro配置文件里shiroFilterFactoryBean.setLoginUrl("/login");的请求,让/login转发到login.html
         registry.addViewController("/to_login").setViewName("login.html");
-        //"/"默认是转发到"/index.html",但是"/index"并没有默认是转发到"/index.html"所以要配置以下
-        registry.addViewController("/index").setViewName("index.html");
         //这是当用户没有访问权限时跳转的页面
         registry.addViewController("/unAuth").setViewName("public/unAuth.html");
-        //进入个人信息页面
-        registry.addViewController("/user/user_info").setViewName("user_info.html");
         //进入货物上架页面
         registry.addViewController("/seller/add_commodity").setViewName("add_commodity.html");
         //过渡页面
         registry.addViewController("/transition").setViewName("public/transition.html");
+
     }
 
     /**
@@ -48,6 +45,7 @@ public class Mvc implements WebMvcConfigurer {
          */
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/to_login", "/login");
+
     }
 
     @Override

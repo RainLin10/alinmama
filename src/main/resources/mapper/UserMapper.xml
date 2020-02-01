@@ -3,15 +3,13 @@
 
 <mapper namespace="com.yylnb.mapper.UserMapper">
 
-
-    <select id="findUserByAccount" resultType="user" parameterType="java.lang.String">
-    SELECT * FROM user WHERE account=${account}
+    <select id="findUserByAccount" resultType="user">
+    SELECT * FROM user WHERE account=#{account}
     </select>
 
-    <select id="findUserInfoById" resultType="user" parameterType="java.lang.Integer">
-   SELECT ui.*,u.* FROM user_info ui INNER JOIN user u ON ui.user_id = u.id WHERE user_id=${id}
+    <select id="findUserInfoById" resultType="user">
+   SELECT ui.*,u.* FROM user_info ui INNER JOIN user u ON ui.user_id = u.id WHERE user_id=#{id}
     </select>
-
 
     <insert id="insertUser" parameterType="user">
     INSERT INTO user(account,password,role) VALUES(#{account},#{password},#{role})
@@ -22,12 +20,10 @@
     VALUES(#{user_id},#{nick_name},#{avatar},#{register_time},#{login_time},#{login_times},#{login_ip})
     </insert>
 
-
     <update id="updateUser_login" parameterType="user">
     UPDATE user_info SET login_time=#{login_time},login_times=login_times+1,login_ip=#{login_ip} WHERE
     user_id=#{user_id}
     </update>
-
 
     <update id="updateUserInfoById" parameterType="user">
         UPDATE user_info
@@ -66,5 +62,20 @@
         id = #{id}
     </update>
 
+    <select id="findAllUsers" resultType="user">
+        SELECT u.account,u.role,ui.* FROM user u INNER JOIN user_info ui ON u.id=ui.user_id
+        <where>
+            <if test="role!= 'all'">
+                and u.role=#{role}
+            </if>
+        </where>
+    </select>
+
+    <select id="findUsersByIds" resultType="user">
+        SELECT u.account,u.role,ui.* FROM user u INNER JOIN user_info ui ON u.id=ui.user_id WHERE user_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>

@@ -78,6 +78,8 @@ public class Shiro {
         filterMap.put("/service/**", "roles[service,admin]");
         //用户操作
         filterMap.put("/user/**", "roles[user,admin,seller,service]");
+        //商品操作
+        filterMap.put("/commodity/**", "roles[user,admin,seller,service]");
         //-----------------------------------------------------------
         //因为设置权限会从上覆盖下面,所以可以除去上面配置的请求，其他请求全部需要认证
         filterMap.put("/**", "authc");

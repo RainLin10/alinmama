@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${title}]]</title>
+    <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+</head>
+<body>
+<span th:include="public/head :: head"></span>
+
+<div class="row mx-auto" style="width: 95% ; margin-top: 100px">
+    <div class="col-md-4" th:each="commodity:${commodities.list}" th:if="${commodities.total!=0}">
+        <div class="card mb-4 shadow-sm">
+            <a th:href="'/commodity/'+${commodity.id}"> <img class="bd-placeholder-img card-img-top" width="100%"
+                                                             height="225"
+                                                             th:src="${commodity.carousel_array[0]}"></a>
+            <div class="card-body">
+                <p class="card-text">[[${commodity.name}]]</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">[[${commodity.price}]]￥</button>
+                    </div>
+                    <a th:href="'/user/'+${commodity.user_id}" class="text-muted">[[${commodity.nick_name}]]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3 class="mx-auto text-center" th:if="${commodities.total==0}" style="width: 300px;">暂无</h3>
+
+</div>
+<!--底部页码-->
+<div class="row mx-auto text-center" style="width: 90%;" th:if="${commodities.total!=0}">
+    <!-- 分页文字信息 -->
+    <div class="col-md-6">
+        当前第<span style="color: cornflowerblue">[[${commodities.pageNum}]]</span>页,
+        总<span style="color: cornflowerblue">[[${commodities.pages}]]</span>页,
+        总共有<span style="color: cornflowerblue">[[${commodities.total}]]</span>条记录
+    </div>
+    <!-- 分页条信息 -->
+    <div class="col-md-6">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <!--首页-->
+                <li><a th:href="'/commodity/search?search='+${search}+'&pn=1'">首页</a></li>
+
+
+                <!--页码-->
+                <div th:each="currentPageNum:${commodities.navigatepageNums }">
+                    <div th:if="${currentPageNum==commodities.pageNum}" style="margin-left: 10px;">
+                        <li><a href="#">[[${currentPageNum}]]</a></li>
+                    </div>
+                    <div th:if="${currentPageNum != commodities.pageNum}" style="margin-left: 10px;">
+                        <li>
+                            <a th:href="'/commodity/search?search='+${search}+'&pn='+${currentPageNum}">[[${currentPageNum}]]</a>
+                        </li>
+                    </div>
+                </div>
+
+
+                <li><a th:href="'/commodity/search?search='+${search}+'&pn='+${commodities.pages}"
+                       style="margin-left: 10px;">末页</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+</body>
+</html>

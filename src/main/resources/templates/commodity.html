@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${commodity.name}]]</title>
+    <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+</head>
+<body>
+<span th:include="public/head :: head"></span>
+
+<div class="container-fluid">
+    <!--商品轮播图-->
+    <div id="myCarousel" class="carousel slide" data-ride="carousel"
+         style="width: 100%;height: 550px;margin-top: 50px; ">
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" class="active"></li>
+            <li data-target="#myCarousel" th:each="carousel:${commodity.carousel_array}"></li>
+        </ol>
+        <div class="carousel-inner" style="width:auto;height: 550px">
+            <div class="carousel-item active text-center">
+                <h1 style="margin-top: 200px">请勿线下交易 谨防网络诈骗</h1>
+            </div>
+            <div class="carousel-item" th:each="carousel:${commodity.carousel_array}">
+                <img class="bd-placeholder-img" width="auto" height="550px" th:src="${carousel}">
+            </div>
+        </div>
+
+        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+
+    <div class="starter-template mx-auto">
+        <!--商品名-->
+        <h1 class="text-center">[[${commodity.name}]]</h1>
+        <!--价格-->
+        <h2 class="text-center text-danger">[[${commodity.price}]]￥</h2>
+        <!--描述-->
+        <div th:utext=" ${commodity.introduction}">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

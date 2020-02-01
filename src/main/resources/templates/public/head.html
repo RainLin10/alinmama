@@ -22,9 +22,13 @@
         <a class="dropdown-item" href="#">Link 3</a>
       </div>
     </li>
-    <form class="form-inline">
+    <form class="form-inline" action="/commodity/search">
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="大家都在搜:">
+        <input name="pn" value="1" style="display: none">
+        <input name="search" type="text" class="form-control" th:placeholder="'大家都在搜:'+${session.searches[0]}" required="required">
+        <div class="input-group-append">
+            <button type="submit" class="btn-dark btn">搜索</button>
+        </div>
     </div>
   </form>
   </ul>
@@ -39,9 +43,27 @@
   <ul class="navbar-nav ml-auto" th:if="${session.userInfo!=null}">
 
 
-    <!--不是卖家，显示-->
-      <li class="nav-item" th:if="${session.userInfo.role!='seller'}">
-        <a class="nav-link" href="#">成为卖家</a>
+    <!--普通用户，显示-->
+      <li class="nav-item" th:if="${session.userInfo.role=='user'}">
+        <a class="nav-link" data-toggle="modal" data-target="#seller_modal">成为卖家</a>
+          <!--模态框-->
+         <div class="modal fade text-left" id="seller_modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 th:if="${session.userInfo.nick_name}">[[${session.userInfo.nick_name}]]你好！</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>如果你想成为卖家,请点击下方的申请按钮,客服会在3个工作日内审核您的信息,并对您进行通过或者退回操作,请耐心等候</p>
+                     <p>请尽量完善个人信息，可以增加通过几率</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-primary" style="color: white"
+                           th:href="'/user/apply_seller?id='+${session.userInfo.id}">申请</a>
+                    </div>
+                </div>
+            </div>
+</div>
      </li>
       <!--是卖家，显示-->
         <li class="nav-item dropdown" th:if="${session.userInfo.role=='seller'}">
@@ -50,37 +72,54 @@
           </a>
           <div class="dropdown-menu">
               <a class="dropdown-item" href="/seller/add_commodity">货物上架</a>
-              <a class="dropdown-item" href="#">出货订单</a>
+              <a class="dropdown-item" href="/seller/i_sell/1/1">我的在售</a>
               <a class="dropdown-item" href="#">----</a>
           </div>
         </li>
 
 
-      <!--购物车-->
-      <li class="nav-item dropdown">
-          <a class="nav-link" href="#">
+      <!--购物车 我的订单
+      用户和卖家时显示-->
+      <li class="nav-item dropdown" th:if="${session.userInfo.role=='seller'||session.userInfo.role=='user'}">
+           <a class="nav-link" href="#">
             购物车
+            </a>
+      </li>
+      <li class="nav-item dropdown" th:if="${session.userInfo.role=='seller'||session.userInfo.role=='user'}">
+         <a class="nav-link" href="/user/i_buy/1/1">
+           我的订单
           </a>
+      </li>
+      <!--管理员时显示-->
+      <li class="nav-item dropdown" th:if="${session.userInfo.role=='admin'}">
+          <a class="nav-link" href="/admin/findAllUsers/all/1">管理员</a>
+      </li>
 
-        </li>
+      <!--客服时显示-->
+      <li class="nav-item dropdown" th:if="${session.userInfo.role=='service'}">
+      <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">
+        客服操作
+      </a>
+      <div class="dropdown-menu">
+          <a class="dropdown-item" href="/service/findAllUsers/apply_seller/1">卖家审核</a>
+          <a class="dropdown-item" href="/service/check/1">商品审核</a>
+      </div>
+    </li>
+
+
       <!--头像-->
     <li class="nav-item">
-        <a href="/user/user_info" style="padding: 0;">
+        <a th:href="'/user/'+${session.userInfo.user_id}" style="padding: 0;">
          <img class="media-object img-thumbnail" style="height: 40px"
-              th:src="${session.userInfo.getAvatar()}">
+              th:src="${session.userInfo.avatar}">
 
         </a>
      </li>
       <!--昵称-->
-     <li class="nav-item dropdown">
+     <li class="nav-item">
         <a class="nav-link" data-toggle="dropdown"
            th:text="${session.userInfo.getNick_name()}"></a>
 
-         <div class="dropdown-menu">
-        <a class="dropdown-item" href="/user/user_info">个人信息</a>
-        <a class="dropdown-item" href="/admin/findAllUsers?pn=1&where=all"
-           th:if="${session.userInfo.getRole()=='admin'}">管理员</a>
-      </div>
     </li>
       <!--注销按钮-->
       <li class="nav-item">
@@ -90,4 +129,6 @@
   </ul>
 
 </nav>
+
+
 </span>
