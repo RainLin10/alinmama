@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAllUsersByRedis(String key) {
         //从redis中查询正在申请卖家资格的用户
-        Set<Object> ids = redisUtil.sGet(key);
+        List<Object> ids = redisUtil.lGet(key,0,-1);
         List<User> users = new ArrayList<User>();
         //当redis中有该key执行查询
         if (redisUtil.hasKey(key)) {
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void seller_passOrLose(String result, Integer user_id) {
         //不管是通过还是退回都需要将redis中的id删除
-        redisUtil.setRemove("apply_seller", user_id);
+        redisUtil.lRemove("apply_seller",1, user_id);
         if (result.equals("pass")) {
             //如果是通过还需要改角色
             User user = new User();
@@ -177,6 +177,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addIdToKey(Integer id, String key) {
         log.info("用户id:" + id + "正在申请卖家资格");
-        redisUtil.sSet(key, id);
+        redisUtil.lSet(key, id);
     }
 }

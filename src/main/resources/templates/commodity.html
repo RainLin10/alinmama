@@ -24,7 +24,7 @@
                 <h1 style="margin-top: 200px">请勿线下交易 谨防网络诈骗</h1>
             </div>
             <div class="carousel-item" th:each="carousel:${commodity.carousel_array}">
-                <img class="bd-placeholder-img" width="auto" height="550px" th:src="${carousel}">
+                <img class="bd-placeholder-img mx-auto  text-center" width="auto" height="550px" th:src="${carousel}">
             </div>
         </div>
 
@@ -44,11 +44,233 @@
         <h1 class="text-center">[[${commodity.name}]]</h1>
         <!--价格-->
         <h2 class="text-center text-danger">[[${commodity.price}]]￥</h2>
+
+        <!-- 按钮：用于打开模态框 -->
+        <p class="text-center text-danger">
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal"
+                    style="width: 150px;" onclick="sum()">
+                购买
+            </button>
+        </p>
+
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">模拟购买</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- 模态框主体 -->
+                    <form action="/commodity/pay" method="post">
+                        <div class="modal-body row">
+                            <input name="user_id" style="display: none" th:value="${session.userInfo.user_id}">
+                            <input id="commodity_id" name="commodity_id" style="display: none"
+                                   th:value="${commodity.id}">
+                            <input name="seller_id" style="display: none" th:value="${commodity.user_id}">
+                            <a th:href="'/commodity/'+${commodity.id}"> <img
+                                    class="bd-placeholder-img mr-2 rounded"
+                                    width="32"
+                                    height="32"
+                                    th:src="${commodity.carousel_array[0]}">
+                            </a>
+                            [[${commodity.name}]]
+                            <input id="quantity" name="quantity" type="text" class="form-control ml-auto" value="1"
+                                   required="required"
+                                   style="width: 70px;margin-right: 20px;" maxlength="5" minlength="1"
+                                   onkeyup="sum()">
+
+
+                        </div>
+                        <!-- 模态框底部 -->
+                        <div class="modal-footer">
+                            <p th:text="${commodity.price}" id="price" style="display: none"></p>
+
+                            <input id="price_sum1" name="price" style="display:none;">
+
+                            <h5 class="text-danger">实付金额:
+                                <span class="text-dark" id="price_sum2"></span>￥
+                            </h5>
+                            <button type="submit" class="btn btn-danger">购买</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="btn-group btn-group-lg" style="width: 100%;">
+            <button id="btn-introduction" type="button" class="btn btn-dark" onclick="introduction()">详情</button>
+            <button id="btn-comment" type="button" class="btn btn-primary"
+                    th:onclick="'comment(),getComment('+${commodity.id}+',1,0)'">评价
+            </button>
+        </div>
         <!--描述-->
-        <div th:utext=" ${commodity.introduction}">
+        <div id="introduction" th:utext=" ${commodity.introduction}" class="text-center">
+        </div>
+
+        <!--评价-->
+        <div id="comment" class="text-center" style="display: none">
+            <label class="radio-inline"><input type="radio" name="type"
+                                               value="好评" checked="checked"
+											   th:onclick="'getComment('+${commodity.id}+',1,0)'">好评</label>
+            <label class="radio-inline"><input type="radio" name="type"
+                                               value="中评"
+											    th:onclick="'getComment('+${commodity.id}+',1,1)'">中评</label>
+            <label class="radio-inline"><input type="radio" name="type"
+                                               value="差评"
+											    th:onclick="'getComment('+${commodity.id}+',1,2)'">差评</label>
+
+            <div class="my-3 p-3 bg-white rounded shadow-sm" id="getComment">
+
+              
+                
+            </div>
+
+
         </div>
     </div>
 </div>
+<script>
+    $("input[type='number']").InputSpinner()
+
+    //价格计算
+    function sum() {
+        //只能输入数字 正整数
+        $("#quantity").val($("#quantity").val().replace(/^(0+)|[^\d]+/g, ''))
+        //最低一件
+        if ($("#quantity").val() === "") {
+            $("#quantity").val($("#quantity").val().replace('', 0))
+        }
+        //计算总价格
+        var price = parseFloat($("#price").text());
+        var quantity = parseInt($("#quantity").val());
+
+        var price_sum = parseFloat((price * quantity).toFixed(2));
+
+
+        $("#price_sum1").val(price_sum)
+        $("#price_sum2").text(price_sum)
+
+    }
+
+
+    //详情
+    function introduction() {
+        $("#introduction").css("display", "");
+        $("#comment").css("display", "none");
+        $("#btn-introduction").removeClass("btn-primary").addClass("btn-dark");
+        $("#btn-comment").removeClass("btn-dark").addClass("btn-primary");
+    }
+
+    //评价
+    function comment() {
+        $("#introduction").css("display", "none");
+        $("#comment").css("display", "");
+        $("#btn-introduction").removeClass("btn-dark").addClass("btn-primary");
+        $("#btn-comment").removeClass("btn-primary").addClass("btn-dark");
+    }
+</script>
+<script>
+		Date.prototype.Format = function (fmt) { //author: meizz  
+            var o = {  
+                "M+": this.getMonth() + 1, //月份  
+                "d+": this.getDate(), //日  
+                "h+": this.getHours(), //小时  
+                "m+": this.getMinutes(), //分  
+                "s+": this.getSeconds(), //秒  
+            };  
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
+            for (var k in o)  
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));  
+            return fmt;  
+        };  
+
+
+			
+    function getComment(id, pn, typeNum) {
+		
+		if(typeNum===0){
+		var	type="好评"
+		}else if(typeNum===1){
+		var	type="中评"
+		}
+		else if(typeNum===2){
+		var	type="差评"
+		}
+        $.ajax({
+            url: "/commodity/getComment",
+            method: "GET",
+            data: {
+                id: id,
+                pn: pn,
+                type: type
+            },
+            success: function (data) {
+			
+				
+				var html="";
+				for(var j=0;j<data.comment.list.length;j++){
+					html=html+"<div class='media text-muted pt-3 text-left'>";
+					html=html+"<a href='/user/"+data.comment.list[0].user_id+"'>";
+					html=html+"<img class='bd-placeholder-img mr-2 rounded' width='32' height='32' src='"+data.comment.list[0].user.avatar+"'>";
+					html=html+"</a>";
+					html=html+"<div class='media-body pb-3 mb-0 small lh-125 border-bottom border-gray'>";
+					html=html+"<div class='d-flex justify-content-between align-items-center w-100'>";
+					html=html+"<strong class='text-gray-dark'>"+data.comment.list[0].user.nick_name+"</strong>";
+					html=html+"</div>";
+					html=html+"<span class='d-block'>"+data.comment.list[0].comment+"</span>";
+					var time = new Date(data.comment.list[0].comment_time).Format("yyyy-MM-dd hh:mm:ss")  ; 
+				
+					html=html+"<a>"+time+"</a>";
+					
+					html=html+"</div>";
+					html=html+"</div>";
+				}
+				
+				
+				
+				 html=html+"<div class='row'>";
+				 html=html+"<div class='col-md-6'>";
+				 html=html+"当前第<span style='color: cornflowerblue'>"+data.comment.pageNum+"</span>页,";
+				 html=html+"总<span style='color: cornflowerblue'>"+data.comment.pages+"</span>页,";
+				 html=html+"总共有<span style='color: cornflowerblue'>"+data.comment.total+"</span>条记录";
+				 html=html+"</div>";
+				 html=html+"<div class='col-md-6'>";
+				 html=html+"<nav aria-label='Page navigation'>";
+				 html=html+"<ul class='pagination'>";
+				 html=html+"<li><a  class='text-primary' onclick='getComment([[${commodity.id}]],1,0)'>首页</a></li>";
+				for(var i=1;i<data.comment.navigatepageNums.length+1;i++){
+					 html=html+"<div>"
+					 if(data.comment.pageNum===i){
+						 html=html+"<div style='margin-left: 10px;'>"
+						 html=html+"<li><a  class='text-dark'>"+i+"</a></li>"
+						 html=html+"</div>"                       
+					 }
+					 if(data.comment.pageNum!=i){
+						 html=html+"<div style='margin-left: 10px;'>"
+						 html=html+"<li><a  class='text-primary' onclick='getComment([[${commodity.id}]],"+i+",0)'>"+i+"</a></li>"
+						 html=html+"</div>"                       
+					 }
+					 html=html+"</div>"
+				}
+				 html=html+"<li><a class='text-primary' onclick='getComment([[${commodity.id}]],+"+data.comment.pages+",0)' style='margin-left: 10px;'>末页</a></li>";
+				 html=html+"</ul>";
+				 html=html+"</nav>";
+				 html=html+"</div>";
+				 html=html+"</div>";
+
+				$("#getComment").empty();
+				$("#getComment").append(html)
+			
+				
+            }
+        })
+    }
+
+	   
+</script>
 
 </body>
 </html>

@@ -26,12 +26,12 @@ public class application {
     @Autowired
     RedisUtil redisUtil;
     @Autowired
-    UserService userService;
+    CommodityService commodityService;
 
     @Test
     public void test() {
-        Integer i = 10;
-        Set<Object> ids = redisUtil.sGet(i+"commodity");
+        String key = "购买商品ID5的所有用户";
+        List<Object> ids = redisUtil.lGet(key, 0, -1);
         System.out.println(ids);
     }
 }

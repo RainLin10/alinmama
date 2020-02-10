@@ -3,7 +3,9 @@ package com.yylnb.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yylnb.entity.Commodity;
+import com.yylnb.entity.Commodity_order;
 import com.yylnb.entity.User;
+import com.yylnb.service.CommodityOrderService;
 import com.yylnb.service.CommodityService;
 import com.yylnb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class UserController {
     UserService userService;
     @Autowired
     CommodityService commodityService;
+    @Autowired
+    CommodityOrderService commodityOrderService;
 
     /**
      * 在个人信息页面更改用户数据
@@ -57,7 +61,7 @@ public class UserController {
      * @param id
      * @return
      */
-    @GetMapping("apply_seller")
+    @GetMapping("/apply_seller")
     public String apply_seller(@RequestParam("id") Integer id) {
         String key = "apply_seller";
         userService.addIdToKey(id, key);
@@ -86,16 +90,14 @@ public class UserController {
         User user = (User) session.getAttribute("userInfo");
         Integer user_id = user.getUser_id();
 
-        //得到商品
-        String key = "user"+user_id + "commodity";
-        List<Commodity> commodities = commodityService.findCommoditiesByRedis(state, key);
+        List<Commodity_order> commodities = commodityOrderService.allCommoditiesOnUser(user_id,state);
         //包装所有商品，获得更多方法，5为显示5个页码
         PageInfo page = new PageInfo(commodities, 10);
         model.addAttribute("commodities", page);
         model.addAttribute("state", state);
         model.addAttribute("whoYou", "user");
         model.addAttribute("title", "我的订单");
-        return "my_commodity";
+        return "my_order";
         //my_commodity.html 需要变量
         //title 页面标题
         //commodities 商品
@@ -124,5 +126,6 @@ public class UserController {
         }
         return "user_info";
     }
+
 
 }

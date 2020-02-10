@@ -55,10 +55,6 @@ public class LoginController {
             User userInfo = userService.findUserInfoById(id);
             //将信息传入session
             session.setAttribute("userInfo", userInfo);
-            //如果是管理员账号，直接进入管理员页面
-            if (user.getRole().equals("admin")) {
-                return "redirect:/admin/findAllUsers/all/1";
-            }
             return "redirect:/";
         } catch (UnknownAccountException e) {
             //用户不存在

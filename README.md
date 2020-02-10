@@ -50,19 +50,46 @@
 | carousel | varchar |  | NOT NULL | | |
 | state | int | 1 | NOT NULL 0 | | |
 | nick_name | varchar | 255 | NOT NULL | | |
+|  |  |      |            | | |
+
+**commodity_order**
+
+| 字段名   | 类型    | 长度 | 是否空   | 自动增长       | 主键        |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| id | int | 10 | NOT NULL | AUTO_INCREMENT | PRIMARY KEY |
+| user_id  | int     | 10 | NOT NULL |  |  |
+| commodity_id | int | 10 | NOT NULL |      |      |
+| create_time | bigint | 255 | NOT NULL | | |
+| state | int | 1    | NOT NULL | | |
+| quantity | int | 5 | NOT NULL | | |
+| price | decimal |7，2|NOT NULL|||
+| comment_id | int |10||||
+
+**comment**
+
+| 字段名   | 类型    | 长度 | 是否空   | 自动增长       | 主键        |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| id | int | 10 | NOT NULL | AUTO_INCREMENT | PRIMARY KEY |
+| commodity_id | int | 10 | NOT NULL |      |      |
+| comment_id | int | 10 | NOT NULL |      |      |
+| comment | bigint | 255 | NOT NULL |      |      |
+| comment_time | varchar | 255 | NOT NULL |      |      |
+| type | char | 2 | NOT NULL | | |
+
+
 
 ## Redis的使用
 
-| Set                                                          |      |      |      |      |      |      |      |      |
-| ------------------------------------------------------------ | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| key:"apply_seller"<br />value:用户id集合<br />注释:正在申请卖家资格的id集合 |      |      |      |      |      |      |      |      |
-| key:"user"+用户id+"commodity_car"<br />value:商品id集合<br />注释:用户的购物车商品id集合 |      |      |      |      |      |      |      |      |
-| key:"user"+用户id+"commodity"<br />value:商品id集合<br />注释:用户的订单商品id集合 |      |      |      |      |      |      |      |      |
-| key:"commodity"+商品id+"user"<br />value用户id集合<br />注释:购物某商品的所有用户集合 |      |      |      |      |      |      |      |      |
-|                                                              |      |      |      |      |      |      |      |      |
-|                                                              |      |      |      |      |      |      |      |      |
-|                                                              |      |      |      |      |      |      |      |      |
-|                                                              |      |      |      |      |      |      |      |      |
+| Set  | zSet                                                         | List                                                         |      |      |      |      |      |      |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- | ---- | ---- | ---- | ---- | ---- |
+|      | key:"hot_search"<br />value:热搜词语集合+搜索次数<br />注释:热搜词语排序 |                                                              |      |      |      |      |      |      |
+|      |                                                              |                                                              |      |      |      |      |      |      |
+|      |                                                              | key:"hot_commodity"<br />value:商品id集合<br />注释:首页展示的商品id集合 |      |      |      |      |      |      |
+|      |                                                              | key:"apply_seller"<br />value:用户id集合<br />注释:正在申请卖家资格的id集合 |      |      |      |      |      |      |
+|      |                                                              |                                                              |      |      |      |      |      |      |
+|      |                                                              |                                                              |      |      |      |      |      |      |
+|      |                                                              |                                                              |      |      |      |      |      |      |
+|      |                                                              |                                                              |      |      |      |      |      |      |
 
 
 
@@ -969,6 +996,32 @@ $('#uploadImg').on('filebatchuploadcomplete',function (event,files,extra) {
 | fileclear              | 点击浏览框右上角X 清空文件前响应事件$("#fileinput").on("fileclear",function(event, data, msg){}); |
 | filecleared            | 点击浏览框右上角X 清空文件后响应事件$("#fileinput").on("filecleared",function(event, data, msg){}); |
 | fileimageuploaded      | 在预览框中图片已经完全加载完毕后回调的事件                   |
+
+## 前端
+
+毫秒转换为时间
+
+```javascript
+Date.prototype.Format = function (fmt) { //author: meizz  
+            var o = {  
+                "M+": this.getMonth() + 1, //月份  
+                "d+": this.getDate(), //日  
+                "h+": this.getHours(), //小时  
+                "m+": this.getMinutes(), //分  
+                "s+": this.getSeconds(), //秒  
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度  
+                "S": this.getMilliseconds() //毫秒  
+            };  
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
+            for (var k in o)  
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));  
+            return fmt;  
+        };  
+
+
+使用：
+var time = new Date(毫秒时间.Format("yyyy-MM-dd hh:mm:ss.S"); 
+```
 
 
 

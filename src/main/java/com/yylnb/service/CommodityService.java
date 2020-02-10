@@ -1,6 +1,7 @@
 package com.yylnb.service;
 
 import com.yylnb.entity.Commodity;
+import com.yylnb.entity.User;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface CommodityService {
 
     void deleteCommodity(Integer id);//根据id删除商品
 
-    void updateStateById(Integer id, Integer state);
+    void updateStateById(Integer id, Integer state);//根据id改变商品状态码
 
     List<Commodity> findCommoditiesByRedis(Integer state, String key);//根据自己的id查询我的订单里的商品
 
@@ -29,5 +30,8 @@ public interface CommodityService {
 
     void delete_hot_commodity(Integer id);//从热门商品集合删除商品
 
-    List<String> hot_search();//
+    List<String> hot_search();//热搜关键字
+
+    void addSales(Integer id);//添加销量
+
 }

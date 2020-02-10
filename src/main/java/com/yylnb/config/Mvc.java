@@ -29,8 +29,6 @@ public class Mvc implements WebMvcConfigurer {
         registry.addViewController("/unAuth").setViewName("public/unAuth.html");
         //进入货物上架页面
         registry.addViewController("/seller/add_commodity").setViewName("add_commodity.html");
-        //过渡页面
-        registry.addViewController("/transition").setViewName("public/transition.html");
 
     }
 

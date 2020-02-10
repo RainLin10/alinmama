@@ -74,7 +74,7 @@ public interface CommodityMapper {
      * @param state
      * @return
      */
-    List<Commodity> findCommoditiesByIds(@Param("ids") Set ids, @Param("state") Integer state);
+    List<Commodity> findCommoditiesByIds(@Param("ids") List<Object> ids, @Param("state") Integer state);
 
     /**
      * 根据商品id查询商品
@@ -86,6 +86,16 @@ public interface CommodityMapper {
     Commodity findCommodityById(@Param("id") Integer id);
 
     /**
+     * 根据商品id和状态码查询商品
+     *
+     * @param id
+     * @return
+     */
+    @Select("SELECT * FROM commodity WHERE id = #{id} AND state=#{state}")
+    Commodity findCommodityByIdAndState(@Param("id") Integer id, @Param("state") Integer state);
+
+
+    /**
      * 根据关键字查询商品集合
      *
      * @param search
@@ -93,4 +103,12 @@ public interface CommodityMapper {
      */
     @Select("SELECT * FROM commodity WHERE name like #{search} or  introduction like #{search}")
     List<Commodity> findCommodityBySearch(@Param("search") String search);
+
+    /**
+     * 根据id增加销量
+     *
+     * @param id
+     */
+    @Update("UPDATE commodity SET sales=sales+1 WHERE id = #{id}")
+    void addSales(Integer id);
 }

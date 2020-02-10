@@ -23,4 +23,6 @@ public class Commodity {
     //state商品的状态
     //0:审核中 1:出售中 2:已下架
     private Integer state;
+    //销量
+    private Integer sales;
 }

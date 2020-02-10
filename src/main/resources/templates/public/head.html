@@ -5,27 +5,29 @@
     <!-- Links -->
   <ul class="navbar-nav">
     <li class="nav-item">
-      <a class="nav-link" href="#">Link 1</a>
+      <a class="nav-link" href="#">销量排行榜</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Link 2</a>
+      <a class="nav-link" href="#">刷单用户公示</a>
     </li>
 
       <!-- Dropdown -->
     <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Dropdown link
+      <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">
+       卖家排行榜
       </a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Link 1</a>
-        <a class="dropdown-item" href="#">Link 2</a>
-        <a class="dropdown-item" href="#">Link 3</a>
+        <a class="dropdown-item" href="#">销量</a>
+        <a class="dropdown-item" href="#">好评</a>
+        <a class="dropdown-item" href="#">坏评</a>
       </div>
     </li>
     <form class="form-inline" action="/commodity/search">
     <div class="input-group">
         <input name="pn" value="1" style="display: none">
-        <input name="search" type="text" class="form-control" th:placeholder="'大家都在搜:'+${session.searches[0]}" required="required">
+        <input name="search" type="text" class="form-control"
+               th:placeholder="'大家都在搜:'+${session.searches[#numbers.formatDecimal(T(java.lang.Math).floor(T(java.lang.Math).random()*10),1,0)]}"
+               required="required" maxlength="10">
         <div class="input-group-append">
             <button type="submit" class="btn-dark btn">搜索</button>
         </div>
@@ -63,7 +65,7 @@
                     </div>
                 </div>
             </div>
-</div>
+         </div>
      </li>
       <!--是卖家，显示-->
         <li class="nav-item dropdown" th:if="${session.userInfo.role=='seller'}">
@@ -73,18 +75,13 @@
           <div class="dropdown-menu">
               <a class="dropdown-item" href="/seller/add_commodity">货物上架</a>
               <a class="dropdown-item" href="/seller/i_sell/1/1">我的在售</a>
-              <a class="dropdown-item" href="#">----</a>
           </div>
         </li>
 
 
-      <!--购物车 我的订单
+      <!-- 我的订单
       用户和卖家时显示-->
-      <li class="nav-item dropdown" th:if="${session.userInfo.role=='seller'||session.userInfo.role=='user'}">
-           <a class="nav-link" href="#">
-            购物车
-            </a>
-      </li>
+
       <li class="nav-item dropdown" th:if="${session.userInfo.role=='seller'||session.userInfo.role=='user'}">
          <a class="nav-link" href="/user/i_buy/1/1">
            我的订单

@@ -14,7 +14,10 @@
     <select id="findCommodityByIdAndRole" resultType="commodity">
         SELECT * FROM commodity WHERE id = #{id}
         <if test="role=='user'">
-            AND state=1 OR state=2
+            AND state=1
+        </if>
+        <if test="role=='seller'">
+            AND (state=1 OR state=2)
         </if>
 
 

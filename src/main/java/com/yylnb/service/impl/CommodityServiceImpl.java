@@ -3,6 +3,7 @@ package com.yylnb.service.impl;
 import com.yylnb.entity.Commodity;
 import com.yylnb.entity.User;
 import com.yylnb.mapper.CommodityMapper;
+import com.yylnb.mapper.UserMapper;
 import com.yylnb.service.CommodityService;
 import com.yylnb.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import java.util.Set;
 public class CommodityServiceImpl implements CommodityService {
     @Autowired
     CommodityMapper commodityMapper;
+    @Autowired
+    UserMapper userMapper;
     @Autowired
     RedisUtil redisUtil;
     @Autowired
@@ -122,7 +125,6 @@ public class CommodityServiceImpl implements CommodityService {
      */
     @Override
     public void deleteCommodity(Integer id) {
-
         commodityMapper.deleteCommodity(id);
     }
 
@@ -138,17 +140,17 @@ public class CommodityServiceImpl implements CommodityService {
     }
 
     /**
-     * 根据自己的id查询我的订单里的商品
+     * 根据redis里存的id集合查询商品
      *
      * @return
      */
     @Override
     public List<Commodity> findCommoditiesByRedis(Integer state, String key) {
-        //从redis中查询正在申请卖家资格的用户
-        Set<Object> ids = redisUtil.sGet(key);
         List<Commodity> commodities = new ArrayList<Commodity>();
         //当redis中有该key执行查询
         if (redisUtil.hasKey(key)) {
+            //从redis中查询用户id集合
+            List<Object> ids = redisUtil.lGet(key, 0, -1);
             //根据查询到的用户id集合查询所以满足条件的用户
             commodities = commodityMapper.findCommoditiesByIds(ids, state);
             //将轮播图地址处理为数组方便展示
@@ -169,9 +171,11 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     public void add_hot_commodity(Integer id) {
-        if (commodityMapper.findCommodityById(id) != null) {
+        Commodity commodity = commodityMapper.findCommodityById(id);
+        //要有这个商品 并且不能是已失效的
+        if (commodity != null && commodity.getState() != 2) {
             String key = "hot_commodity";
-            redisUtil.sSet(key, id);
+            redisUtil.lSet(key, id);
         }
 
     }
@@ -186,7 +190,7 @@ public class CommodityServiceImpl implements CommodityService {
     public void delete_hot_commodity(Integer id) {
         if (commodityMapper.findCommodityById(id) != null) {
             String key = "hot_commodity";
-            redisUtil.setRemove(key, id);
+            redisUtil.lRemove(key, 1, id);
         }
     }
 
@@ -205,5 +209,15 @@ public class CommodityServiceImpl implements CommodityService {
 
         }
         return searches;
+    }
+
+    /**
+     * 添加销量
+     *
+     * @param id
+     */
+    @Override
+    public void addSales(Integer id) {
+        commodityMapper.addSales(id);
     }
 }

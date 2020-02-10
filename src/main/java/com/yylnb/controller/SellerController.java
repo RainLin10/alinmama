@@ -3,7 +3,9 @@ package com.yylnb.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yylnb.entity.Commodity;
+import com.yylnb.entity.Commodity_order;
 import com.yylnb.entity.User;
+import com.yylnb.service.CommodityOrderService;
 import com.yylnb.service.CommodityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ import java.util.List;
 public class SellerController {
     @Autowired
     CommodityService commodityService;
+    @Autowired
+    CommodityOrderService commodityOrderService;
 
     /**
      * 上架货物
@@ -54,7 +58,7 @@ public class SellerController {
         commodity.setPrice(price);
         commodity.setCarousel(carousel);
         commodityService.insertCommodity(commodity);
-        return "redirect:/transition";
+        return "public/transition";
     }
 
     /**
@@ -105,5 +109,52 @@ public class SellerController {
         commodityService.deleteCommodity(id);
         return "redirect:/seller/i_sell/" + state + "/" + pn;
     }
+
+
+    /**
+     * 某商品的所有购买者
+     *
+     * @return
+     */
+    @RequestMapping("/allUsersOnCommodity/{id}/{pn}")
+    public String allUsersOnCommodity(@PathVariable("pn") Integer pn,
+                                      @PathVariable("id") Integer id,
+                                      Model model) {
+        //使用分页插件，pn是页面传来的页码，6为每页最大显示数
+        PageHelper.startPage(pn, 20);
+        List<Commodity_order> users = commodityOrderService.allUsersOnCommodity(id);
+        //包装所有商品，获得更多方法，5为显示5个页码
+        PageInfo page = new PageInfo(users, 10);
+        model.addAttribute("users", page);
+        model.addAttribute("id", id);
+        model.addAttribute("whoYou", "seller");
+        model.addAttribute("title", "所有购买者");
+        return "my_order";
+        //my_commodity.html 需要变量
+        //title 页面标题
+        //commodities 商品
+        //whoYou 角色
+        //state 商品状态码
+    }
+
+    /**
+     * 让正在出售的下架
+     *
+     * @param id
+     * @param pn
+     * @return
+     */
+    @GetMapping("take_off")
+    public String take_off(@RequestParam("id") Integer id,
+                           @RequestParam("pn") Integer pn) {
+        //如果商品处在热门商品列表则删除
+        commodityService.delete_hot_commodity(id);
+        //将商品的状态码设置为2 已失效
+        commodityService.updateStateById(id, 2);
+        //删除所有该商品订单
+        commodityOrderService.deleteCommodity_order(id);
+        return "redirect:/seller/i_sell/1/" + pn;
+    }
+
 
 }

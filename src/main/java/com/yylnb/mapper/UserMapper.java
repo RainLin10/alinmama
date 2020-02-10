@@ -78,7 +78,7 @@ public interface UserMapper {
      * @param ids
      * @return
      */
-    List<User> findUsersByIds(@Param("ids") Set ids);
+    List<User> findUsersByIds(@Param("ids") List<Object> ids);
 
 
 }
