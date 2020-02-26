@@ -1,6 +1,8 @@
 package com.yylnb.config;
 
 import com.yylnb.Interceptor.LoginInterceptor;
+import com.yylnb.Interceptor.Refresh;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.config.annotation.*;
@@ -11,8 +13,10 @@ import org.springframework.web.servlet.config.annotation.*;
  */
 @Configuration
 public class Mvc implements WebMvcConfigurer {
-    public final static String IMGINPUT = ClassUtils.getDefaultClassLoader().getResource("static").getPath() + "/upload/";
-
+    @Value("${alinmama_avatar}")
+    public String alinmama_avatar;
+    @Value("${alinmama_commodity}")
+    public String alinmama_commodity;
     /**
      * 视图跳转器
      * 用于页面的跳转
@@ -30,6 +34,7 @@ public class Mvc implements WebMvcConfigurer {
         //进入货物上架页面
         registry.addViewController("/seller/add_commodity").setViewName("add_commodity.html");
 
+
     }
 
     /**
@@ -43,15 +48,19 @@ public class Mvc implements WebMvcConfigurer {
          */
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/to_login", "/login");
+        registry.addInterceptor(new Refresh())
+                .addPathPatterns("/**");
 
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //映射头像文件夹的路径
-        registry.addResourceHandler("/alinmama_avatar/**").addResourceLocations("file://" + IMGINPUT + "alinmama_avatar/");
-        //映射商品文件夹的路径
-        registry.addResourceHandler("/alinmama_commodity/**").addResourceLocations("file://" + IMGINPUT + "alinmama_commodity/");
+
+
+        //映射头像文件夹的路径  //映射商品文件夹的路径
+        registry.addResourceHandler("/alinmama_avatar/**").addResourceLocations(alinmama_avatar);
+        registry.addResourceHandler("/alinmama_commodity/**").addResourceLocations(alinmama_commodity);
+
     }
 
 }

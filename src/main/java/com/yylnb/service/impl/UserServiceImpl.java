@@ -4,6 +4,7 @@ import com.yylnb.entity.User;
 import com.yylnb.mapper.UserMapper;
 import com.yylnb.service.UserService;
 import com.yylnb.util.RedisUtil;
+import com.yylnb.webSocket.LoginAndMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    LoginAndMessage loginAndMessage;
 
     /**
      * 根据id更新用户数据
@@ -61,7 +64,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User findUserInfoById(Integer id) {
-        return userMapper.findUserInfoById(id);
+        User user = userMapper.findUserInfoById(id);
+        Boolean isOnline = loginAndMessage.isOnline(id);
+        if (isOnline == true) {
+            user.setIsOnline("在线");
+        } else {
+            user.setIsOnline("离线");
+        }
+        return user;
     }
 
 
@@ -73,7 +83,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional//事务注解，因为要插入两张表，所以必须保证要么一起成功，要么一起失败
-    public String insertUserAndUserInfo(String account, String password) throws UnknownHostException {
+    public String insertUserAndUserInfo(String account, String password, String ip) throws UnknownHostException {
         //在注册之前先查询数据库中是否有相同的账户名
         User isUser = userMapper.findUserByAccount(account);
         if (isUser != null) {
@@ -93,7 +103,7 @@ public class UserServiceImpl implements UserService {
         userInfo.setRegister_time(System.currentTimeMillis());
         userInfo.setLogin_time(System.currentTimeMillis());
         userInfo.setLogin_times(1);
-        userInfo.setLogin_ip(InetAddress.getLocalHost().getHostAddress());
+        userInfo.setLogin_ip(ip);
         userMapper.insertUserInfo(userInfo);
         return "注册成功";
     }
@@ -105,12 +115,12 @@ public class UserServiceImpl implements UserService {
      * @throws UnknownHostException
      */
     @Override
-    public void updateForLogin(Integer id) throws UnknownHostException {
+    public void updateForLogin(Integer id, String ip) throws UnknownHostException {
         log.info("用户id:" + id + "登录了");
         User userInfo = new User();
         userInfo.setUser_id(id);
         userInfo.setLogin_time(System.currentTimeMillis());
-        userInfo.setLogin_ip(InetAddress.getLocalHost().getHostAddress());
+        userInfo.setLogin_ip(ip);
         userMapper.updateUser_login(userInfo);
     }
 
@@ -135,7 +145,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAllUsersByRedis(String key) {
         //从redis中查询正在申请卖家资格的用户
-        List<Object> ids = redisUtil.lGet(key,0,-1);
+        List<Object> ids = redisUtil.lGet(key, 0, -1);
         List<User> users = new ArrayList<User>();
         //当redis中有该key执行查询
         if (redisUtil.hasKey(key)) {
@@ -155,7 +165,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void seller_passOrLose(String result, Integer user_id) {
         //不管是通过还是退回都需要将redis中的id删除
-        redisUtil.lRemove("apply_seller",1, user_id);
+        redisUtil.lRemove("apply_seller", 1, user_id);
         if (result.equals("pass")) {
             //如果是通过还需要改角色
             User user = new User();

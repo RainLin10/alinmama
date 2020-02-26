@@ -5,6 +5,7 @@ import com.yylnb.service.UserService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ClassUtils;
@@ -28,8 +29,8 @@ import java.util.*;
 public class FileController {
     @Autowired
     UserService userService;
-    public final static String IMGINPUT = ClassUtils.getDefaultClassLoader().getResource("static").getPath() + "/upload/";
-    //  IMGINPUT=D:/Project/alinmama/target/classes/static/upload/
+    @Value("${IMGINPUT}")
+    public String IMGINPUT;
 
     /**
      * 上传图片返回地址(json)
@@ -44,7 +45,8 @@ public class FileController {
     @PostMapping(value = "/img")
     public Map<String, Object> fileUpload(@RequestParam(value = "img") MultipartFile img,
                                           @RequestParam(value = "path") String path,
-                                          Model model, HttpSession session) {
+                                          Model model,
+                                          HttpSession session) {
 
         Map<String, Object> json = new HashMap<String, Object>();
         String fileName = img.getOriginalFilename();  // 获取图片的名字fileName

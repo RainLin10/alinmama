@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>与[[${receiver_user.nick_name}]]聊天中...</title>
+    <script type="application/javascript" th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <script type="application/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}">
+</head>
+<body>
+<span th:include="public/head :: head"></span>
+<input style="display: none" th:value="${send_user.user_id}" id="send_user_id">
+<input style="display: none" th:value="${receiver_user.user_id}" id="receiver_user_id">
+
+<div class="container-fluid text-center">
+    <h2>与[[${receiver_user.nick_name}]]聊天中...</h2>
+    <div class="alert alert-danger alert-dismissible mx-auto" id="notOnline" style="width: 80%;display: none">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    <div class="mx-auto text-left" id="chat"
+         style="width: 80%; height: 400px;overflow: auto;border: 1px solid black"></div>
+
+    <h1>请输入</h1>
+    <input id="send" style="width: 70%" required="required">
+
+    </input>
+    <button onclick="sendMessage()" class="btn btn-primary" style="width: 10%">发送</button>
+
+
+</div>
+<script>
+
+
+    var send_user_id = $("#send_user_id").val();
+    var receiver_user_id = $("#receiver_user_id").val();
+
+    var socket;
+    if (typeof (WebSocket) == "undefined") {
+        console.log("您的浏览器不支持WebSocket");
+    } else {
+        console.log("您的浏览器支持WebSocket");
+        //实现化WebSocket对象，指定要连接的服务器地址与端口建立连接
+        socket = new WebSocket("ws://localhost:80/chat/" + send_user_id + "/" + receiver_user_id);
+        // socket = new WebSocket("ws://yylnb.com:80/chat/" + send_user_id + "/" + receiver_user_id);
+        //打开事件
+        socket.onopen = function () {
+            console.log("开启");
+        };
+        //获得服务器端消息事件
+        socket.onmessage = function (msg) {
+            var message = JSON.parse(msg.data);
+            if (message.receiver_id === "-1") {
+                $("#notOnline").removeAttr("style");
+                $("#notOnline").css("width", "80%");
+                $("#notOnline").append(message.msg)
+            }
+            let date = new Date();
+            var html = "";
+            var time = date.getMonth() + 1 + "/" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+            if (message.send_id === send_user_id && message.receiver_id !== "-1") {
+                var html = html + "<p><span style='color:#027147;'>我 </span> " + time + "</p><p>" + message.msg + "</p>";
+                $("#chat").append(html)
+            }
+            if (message.send_id === receiver_user_id && message.receiver_id === send_user_id) {
+                var html = html + "<p><span style='color:#0001c2;'>对方 </span>" + time + "</p><p>" + message.msg + "</p>";
+                $("#chat").append(html)
+            }
+
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("关闭");
+        };
+
+        //发生了错误事件
+        socket.onerror = function () {
+            alert("错误");
+        }
+    }
+
+
+    function sendMessage() {
+        if (document.getElementById("send").value !== "") {
+            var a = {
+                send_id: send_user_id,
+                msg: document.getElementById("send").value,
+                receiver_id: receiver_user_id
+            }
+            var message = JSON.stringify(a);
+            socket.send(message);
+            document.getElementById("send").value = "";
+        }
+
+    }
+</script>
+
+</body>
+</html>

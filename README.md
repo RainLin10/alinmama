@@ -1020,12 +1020,15 @@ Date.prototype.Format = function (fmt) { //author: meizz
 
 
 使用：
-var time = new Date(毫秒时间.Format("yyyy-MM-dd hh:mm:ss.S"); 
+var time = new Date(毫秒时间.Format("yyyy-MM-dd hh:mm:ss.S")); 
+                    Date.parse(new Date());
 ```
 
 
 
+Comment(
 
+id=7, commodity_id=11, user_id=11, comment=挺好的, comment_time=1581504057594, type=好评, user=User(id=11, account=111, password=111, role=user, user_id=11, nick_name=我要做卖家, introduction=asdasd, gender=男, avatar=/alinmama_avatar/b448c223-4aff-40d8-ad3d-6e8c71722920.png, register_time=1580279538876, login_time=1581504035250, login_times=100, login_ip=192.168.1.8)), Comment(
 
-
+id=8, commodity_id=11, user_id=11, comment=第三次买了 真的不错, comment_time=1581504066586, type=好评, user=User(id=11, account=111, password=111, role=user, user_id=11, nick_name=我要做卖家, introduction=asdasd, gender=男, avatar=/alinmama_avatar/b448c223-4aff-40d8-ad3d-6e8c71722920.png, register_time=1580279538876, login_time=1581504035250, login_times=100, login_ip=192.168.1.8))]
 

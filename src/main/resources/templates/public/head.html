@@ -44,8 +44,9 @@
     <!-- 登录状态 -->
   <ul class="navbar-nav ml-auto" th:if="${session.userInfo!=null}">
 
+    <input style="display: none" th:value="${session.userInfo.user_id}" id="user_id">
 
-    <!--普通用户，显示-->
+      <!--普通用户，显示-->
       <li class="nav-item" th:if="${session.userInfo.role=='user'}">
         <a class="nav-link" data-toggle="modal" data-target="#seller_modal">成为卖家</a>
           <!--模态框-->
@@ -118,6 +119,24 @@
            th:text="${session.userInfo.getNick_name()}"></a>
 
     </li>
+
+      <li class="nav-item">
+          <span class="badge badge-info" id="messageSize" style="margin-top: 10px;" onclick="msg()" data-toggle="modal"
+                data-target="#msgModal"></span>
+          <!--模态框-->
+         <div class="modal fade text-left" id="msgModal" tabindex="-1" role="dialog">
+             <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-body" id="msg">
+
+                    </div>
+
+                </div>
+            </div>
+         </div>
+      </li>
+
       <!--注销按钮-->
       <li class="nav-item">
          <a type="button" class="btn-sm btn-outline-danger " style="text-decoration:none;margin-top: 5.2px;"
@@ -126,6 +145,62 @@
   </ul>
 
 </nav>
+    <script>
+        console.log("\n          _____                    _____                    _____                    _____          \n         /\\    \\                  /\\    \\                  /\\    \\                  /\\    \\         \n        /::\\____\\                /::\\    \\                /::\\    \\                /::\\    \\        \n       /:::/    /                \\:::\\    \\              /::::\\    \\              /::::\\    \\       \n      /:::/    /                  \\:::\\    \\            /::::::\\    \\            /::::::\\    \\      \n     /:::/    /                    \\:::\\    \\          /:::/\\:::\\    \\          /:::/\\:::\\    \\     \n    /:::/____/                      \\:::\\    \\        /:::/__\\:::\\    \\        /:::/__\\:::\\    \\    \n   /::::\\    \\                      /::::\\    \\      /::::\\   \\:::\\    \\      /::::\\   \\:::\\    \\   \n  /::::::\\    \\   _____    ____    /::::::\\    \\    /::::::\\   \\:::\\    \\    /::::::\\   \\:::\\    \\  \n /:::/\\:::\\    \\ /\\    \\  /\\   \\  /:::/\\:::\\    \\  /:::/\\:::\\   \\:::\\____\\  /:::/\\:::\\   \\:::\\    \\ \n/:::/  \\:::\\    /::\\____\\/::\\   \\/:::/  \\:::\\____\\/:::/  \\:::\\   \\:::|    |/:::/__\\:::\\   \\:::\\____\\\n\\::/    \\:::\\  /:::/    /\\:::\\  /:::/    \\::/    /\\::/   |::::\\  /:::|____|\\:::\\   \\:::\\   \\::/    /\n \\/____/ \\:::\\/:::/    /  \\:::\\/:::/    / \\/____/  \\/____|:::::\\/:::/    /  \\:::\\   \\:::\\   \\/____/ \n          \\::::::/    /    \\::::::/    /                 |:::::::::/    /    \\:::\\   \\:::\\    \\     \n           \\::::/    /      \\::::/____/                  |::|\\::::/    /      \\:::\\   \\:::\\____\\    \n           /:::/    /        \\:::\\    \\                  |::| \\::/____/        \\:::\\   \\::/    /    \n          /:::/    /          \\:::\\    \\                 |::|  ~|               \\:::\\   \\/____/     \n         /:::/    /            \\:::\\    \\                |::|   |                \\:::\\    \\         \n        /:::/    /              \\:::\\____\\               \\::|   |                 \\:::\\____\\        \n        \\::/    /                \\::/    /                \\:|   |                  \\::/    /        \n         \\/____/                  \\/____/                  \\|___|                   \\/____/         \n\nalinmama(yylnb.com)\n    ")
+
+        var messageList = new Array();
+        var user_id = $("#user_id").val();
+        var socket;
+        if (typeof (WebSocket) == "undefined") {
+            alert("您的浏览器不支持WebSocket");
+        } else {
+            console.log("您的浏览器支持WebSocket");
+        }
+        //实现化WebSocket对象，指定要连接的服务器地址与端口建立连接
+        socket = new WebSocket("ws://localhost:80/online/" + user_id);
+        // socket = new WebSocket("ws://yylnb.com:80/online/" + user_id);
+        //打开事件
+        socket.onopen = function () {
+            console.log("已登录");
+        };
+        //获得服务器端消息事件
+        socket.onmessage = function (msg) {
+            messageList.push(JSON.parse(msg.data));
+            $("#messageSize").empty();
+            if (messageList.length !== "0") {
+                $("#messageSize").append(messageList.length);
+            }
+        }
+        //关闭事件
+        socket.onclose = function () {
+            console.log("离线");
+        };
+
+        //发生了错误事件
+        socket.onerror = function () {
+            console.log("错误");
+        }
+
+        function msg() {
 
 
+            var html = "";
+            html = html + "<ul class='list-group'>"
+            for (var i = 0; i < messageList.length; i++) {
+                var s = parseInt(messageList[i].send_id)
+                var m = messageList[i].msg
+                var r = parseInt(messageList[i].receiver_id)
+                html = html + "<li class='list-group-item'>"
+                html = html + "<a href='/user/chat/" + s + "'>"
+                html = html + m
+                html = html + "</a>"
+                html = html + "</li>"
+            }
+            html = html + "</ul>"
+            $("#msg").empty()
+            $("#msg").append(html)
+        }
+
+
+</script>
 </span>

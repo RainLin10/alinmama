@@ -37,11 +37,11 @@
             <form action="/login" method="post">
                 <div class="form-group">
                 <label>账户:</label>
-                <input type="text" class="form-control"  name="account">
+                <input type="text" class="form-control"  name="account" required="required">
             </div>
                 <div class="form-group">
                     <label>密码:</label>
-                    <input type="password" class="form-control" name="password">
+                    <input type="password" class="form-control" name="password" required="required">
                 </div>
                 <div class="form-group">
                     <u><a data-toggle="modal" data-target="#myModal" style="color: white;">还没有账户?</a></u>
@@ -65,11 +65,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>账户:</label>
-                        <input type="text" class="form-control" name="account" maxlength="15" placeholder="账户长度在15个字符内,请设置有标识性的账户名">
+                        <input type="text" class="form-control" name="account" maxlength="15" placeholder="账户长度在15个字符内,请设置有标识性的账户名" required="required">
                     </div>
                     <div class="form-group">
                         <label>密码:</label>
-                        <input type="password" class="form-control" name="password" maxlength="15" placeholder="密码长度在15个字符内,请设置相对复杂的密码">
+                        <input type="password" class="form-control" name="password" maxlength="15" placeholder="密码长度在15个字符内,请设置相对复杂的密码" required="required">
                     </div>
 
                 </div>

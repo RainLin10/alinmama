@@ -101,7 +101,7 @@ public interface CommodityMapper {
      * @param search
      * @return
      */
-    @Select("SELECT * FROM commodity WHERE name like #{search} or  introduction like #{search}")
+    @Select("SELECT * FROM commodity WHERE (name like #{search} or  introduction like #{search}) AND state!=2")
     List<Commodity> findCommodityBySearch(@Param("search") String search);
 
     /**

@@ -90,7 +90,7 @@ public class UserController {
         User user = (User) session.getAttribute("userInfo");
         Integer user_id = user.getUser_id();
 
-        List<Commodity_order> commodities = commodityOrderService.allCommoditiesOnUser(user_id,state);
+        List<Commodity_order> commodities = commodityOrderService.allCommoditiesOnUser(user_id, state);
         //包装所有商品，获得更多方法，5为显示5个页码
         PageInfo page = new PageInfo(commodities, 10);
         model.addAttribute("commodities", page);
@@ -117,6 +117,7 @@ public class UserController {
     public String user_info(@PathVariable("user_id") Integer user_id,
                             HttpSession session,
                             Model model) {
+
         User user = (User) session.getAttribute("userInfo");
         //如果是本机用户 则直接返回Session
         if (user.getUser_id().equals(user_id)) {
@@ -128,4 +129,18 @@ public class UserController {
     }
 
 
+    @RequestMapping("/chat/{receiver_id}")
+    public String chatOneByOne(@PathVariable("receiver_id") Integer receiver_id,
+                               Model model,
+                               HttpSession session) {
+        User send_user = (User) session.getAttribute("userInfo");
+        //不允许自己和自己对话
+        if (send_user.getUser_id().equals(receiver_id)) {
+            return "redirect:/";
+        }
+        User receiver_user = userService.findUserInfoById(receiver_id);
+        model.addAttribute("send_user", send_user);
+        model.addAttribute("receiver_user", receiver_user);
+        return "chat";
+    }
 }

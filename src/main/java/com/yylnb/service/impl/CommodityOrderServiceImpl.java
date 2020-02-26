@@ -8,6 +8,7 @@ import com.yylnb.mapper.CommodityOrderMapper;
 import com.yylnb.mapper.UserMapper;
 import com.yylnb.service.CommodityOrderService;
 import com.yylnb.service.CommodityService;
+import com.yylnb.webSocket.LoginAndMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,9 @@ public class CommodityOrderServiceImpl implements CommodityOrderService {
     CommodityMapper commodityMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    LoginAndMessage loginAndMessage;
+
 
     /**
      * 某商品的所有购买者

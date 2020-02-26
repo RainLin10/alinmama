@@ -22,4 +22,5 @@ public class User {
     private Long login_time;
     private Integer login_times;
     private String login_ip;
+    private String isOnline;
 }

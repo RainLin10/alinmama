@@ -17,9 +17,9 @@ public interface UserService {
 
     User findUserInfoById(Integer id);//id找用户
 
-    String insertUserAndUserInfo(String account, String password) throws UnknownHostException;//注册
+    String insertUserAndUserInfo(String account, String password, String ip) throws UnknownHostException;//注册
 
-    void updateForLogin(Integer id) throws UnknownHostException;//登陆时更新
+    void updateForLogin(Integer id, String ip) throws UnknownHostException;//登陆时更新
 
     List<User> findAllUsers(String role);//查询 按条件筛选后的用户 all=所有 seller=卖家 admin=管理员 service=客服
 

@@ -2,16 +2,19 @@ package com.yylnb.controller;
 
 import com.yylnb.entity.User;
 import com.yylnb.service.UserService;
+import com.yylnb.util.IpUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.UnknownHostException;
 
@@ -26,6 +29,7 @@ public class LoginController {
     @Autowired
     UserService userService;
 
+
     /**
      * 接收前端传来的账户和密码使用shiro进行登录校验,登录成功则存入session相关的用户信息，登陆失败则用model返回相关提示信息
      *
@@ -36,7 +40,17 @@ public class LoginController {
      * @return
      */
     @PostMapping("/login")
-    public String login(@RequestParam("account") String account, @RequestParam("password") String password, Model model, HttpSession session) {
+    public String login(@RequestParam("account") String account,
+                        @RequestParam("password") String password,
+                        Model model,
+                        HttpSession session,
+                        HttpServletRequest request) {
+        if (account.equals("") || password.equals("")) {
+            String msg = "账户或密码为空";
+            model.addAttribute("msg", msg);
+            return "login";
+        }
+
         //获取Subject
         Subject subject = SecurityUtils.getSubject();
         //封装用户数据
@@ -50,7 +64,8 @@ public class LoginController {
             User user = (User) subject.getPrincipal();
             Integer id = user.getId();
             //登录成功后更新相关信息
-            userService.updateForLogin(id);
+            String ip = IpUtil.getIpAddr(request);
+            userService.updateForLogin(id,ip);
             //根据id查找到用户的所有信息
             User userInfo = userService.findUserInfoById(id);
             //将信息传入session
@@ -94,8 +109,17 @@ public class LoginController {
      * @throws UnknownHostException
      */
     @PostMapping("/register")
-    public String register(@RequestParam("account") String account, @RequestParam("password") String password, Model model) throws UnknownHostException {
-        String msg = userService.insertUserAndUserInfo(account, password);
+    public String register(@RequestParam("account") String account,
+                           @RequestParam("password") String password,
+                           Model model,
+                           HttpServletRequest request) throws UnknownHostException {
+        if (account.equals("") || password.equals("")) {
+            String msg = "账户或密码为空";
+            model.addAttribute("msg", msg);
+            return "login";
+        }
+        String ip = IpUtil.getIpAddr(request);
+        String msg = userService.insertUserAndUserInfo(account, password,ip);
         model.addAttribute("msg", msg);
         return "login";
     }

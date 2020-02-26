@@ -12,15 +12,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author RainLin
  * @date 2020/1/17 - 15:40
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 public class application {
     @Autowired
@@ -30,8 +29,15 @@ public class application {
 
     @Test
     public void test() {
-        String key = "购买商品ID5的所有用户";
-        List<Object> ids = redisUtil.lGet(key, 0, -1);
-        System.out.println(ids);
+        List<String> b = new ArrayList<String>();
+        b.add("1");
+        b.add("2");
+        b.add("3");
+        System.out.println(b);
+        b.set(0, null);
+        b.set(1, null);
+        b.removeAll(Collections.singleton(null));
+        System.out.println(b);
+
     }
 }

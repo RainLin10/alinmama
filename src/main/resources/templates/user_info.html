@@ -13,10 +13,11 @@
 <body>
 <span th:replace="public/head :: head"></span>
 <div class="container-fluid"
-     style="border-radius:10px;box-shadow:0px 0px 16px 5px #ccc;width: 85%;margin-top: 50px;padding-bottom: 10px;margin-bottom: 50px;">
+     style="border-radius:10px;box-shadow:0px 0px 16px 5px #ccc;width: 85%;margin-top: 50px;padding-bottom: 10px;margin-bottom: 50px;"
+     th:if="${session.userInfo.user_id==userInfo.user_id}">
     <!--第一行-->
 
-    <h3 th:if="${session.userInfo.user_id==userInfo.user_id}">你好!<span th:text="${userInfo.nick_name}" ></span>，在这可以更改你的个人信息哦！</h3>
+    <h3>你好!<span th:text="${userInfo.nick_name}"></span>，在这可以更改你的个人信息哦！</h3>
     <hr>
     <!--第二行-->
     <div class="container-fluid">
@@ -27,7 +28,7 @@
                     <img th:src="${userInfo.avatar}" alt="tx" class="img-thumbnail"
                          style="height: 150px;width: 150px;">
                     <button class="btn btn-primary" style="width: 100%;" data-toggle="modal" data-target="#myModal"
-                            th:if="${session.userInfo.user_id==userInfo.user_id}">
+                    >
                         更换头像
                     </button>
                 </div>
@@ -36,7 +37,7 @@
                 <!--个人信息-->
                 <form class="form-horizontal" action="/user/updateUserInfo" method="post">
                     <!--账户名-->
-                    <div class="form-group" th:if="${session.userInfo.user_id==userInfo.user_id}">
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">账户名</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="account"
@@ -49,10 +50,9 @@
                         <label class="col-sm-2 control-label">昵称</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="nick_name"
-                                   th:if="${session.userInfo.user_id==userInfo.user_id}"
+
                                    th:value="${userInfo.nick_name}" maxlength="6" required="required">
-                            <p class="form-control" th:if="${session.userInfo.user_id!=userInfo.user_id}">
-                                [[${userInfo.nick_name}]]</p>
+
                         </div>
                     </div>
                     <!--签名-->
@@ -60,10 +60,9 @@
                         <label class="col-sm-2 control-label">我的介绍</label>
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="3" name="introduction"
-                                      th:if="${session.userInfo.user_id==userInfo.user_id}"
+
                                       th:text="${userInfo.introduction}" maxlength="20"></textarea>
-                            <p class="form-control" th:if="${session.userInfo.user_id!=userInfo.user_id}">
-                                [[${userInfo.introduction}]]</p>
+
                         </div>
                     </div>
                     <!--性别-->
@@ -71,17 +70,16 @@
                         <label class="col-sm-2 control-label">性别</label>
                         <div class="col-sm-10">
                             <select class="form-control" name="gender"
-                                    th:if="${session.userInfo.user_id==userInfo.user_id}">
+                            >
                                 <option value="女" th:selected="${userInfo.gender}=='女'?'true':'false'">女
                                 </option>
                                 <option value="男" th:selected="${userInfo.gender}=='男'?'true':'false'">男
                                 </option>
                             </select>
-                            <p class="form-control" th:if="${session.userInfo.user_id!=userInfo.user_id}">
-                                [[${userInfo.gender}]]</p>
+
                         </div>
                     </div>
-                    <div class="form-group" th:if="${session.userInfo.user_id==userInfo.user_id}">
+                    <div class="form-group">
                         <div class="col-md-10">
                             <span class="alert alert-danger" role="alert" th:if="${msg!=null}" th:text="${msg}"></span>
                         </div>
@@ -89,19 +87,6 @@
                             <button class="btn btn-success" style="width: 100%;" id="updateUserInfo">提交</button>
                         </div>
                     </div>
-
-
-                    <div class="form-group" th:if="${session.userInfo.user_id==userInfo.user_id}">
-                        <div class="col-md-6">
-                            <label>更改密码</label>
-                            <button class="btn btn-primary" style="width: 100%;">更改密码</button>
-                        </div>
-                        <div class="col-md-6">
-                            <label>待定</label>
-                            <button class="btn btn-primary" style="width: 100%;">待定</button>
-                        </div>
-                    </div>
-
                 </form>
 
             </div>
@@ -111,6 +96,34 @@
     </div>
 
 </div>
+
+<div class="text-center" style="background-image: url('/imgs/info.jpg');"
+     th:if="${session.userInfo.user_id!=userInfo.user_id}">
+    <img th:src="${userInfo.avatar}" alt="头像" class="img-circle" style="border-radius:50%;margin-top:50px;" width="100"
+         height="100">
+    <h3>
+        <span>[[${userInfo.nick_name}]]</span>
+
+    </h3>
+    <span>[[${userInfo.gender}]]  ,[[${userInfo.isOnline}]]</span>
+    <p style="color: #5FB878;" th:if="${userInfo.role=='user'}">用户</p>
+    <p style="color: #5FB878;" th:if="${userInfo.role=='admin'}">认证信息：管理员</p>
+    <p style="color: #5FB878;" th:if="${userInfo.role=='seller'}">认证信息：签约卖家</p>
+    <p style="color: #5FB878;" th:if="${userInfo.role=='service'}">认证信息：客服</p>
+    <p class="fly-home-info">
+        <i class="iconfont icon-shijian"></i><span>[[${#dates.format(userInfo.register_time, 'yyyy-MM-dd HH:mm')}]] 加入</span>
+    </p>
+
+    <p class="fly-home-sign">个人简介：[[${userInfo.introduction}]]</p>
+
+    <div class="fly-sns" data-user="">
+        <a class="btn btn-primary" data-type="chat" th:href="${'/user/chat/'+userInfo.user_id}"
+           style="margin-bottom: 30px;">发起会话</a>
+    </div>
+
+</div>
+
+
 <!-- 选择头像（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
